@@ -30,13 +30,174 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{}
+\begin{frame}{Security Protocols}
 \begin{itemize}
-\item 
+\item The focus of security protocols is on secure communications;\pause
+\item Two or more parties are involved;\pause
+\item Communication is carried over an insecure network;\pause
+\item Cryptography is used to achieve some goal.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Security Protocols Goals}
+\begin{itemize}
+\item Guided by user needs:\pause
+\begin{itemize}
+\item Provide an end-to-end encryption channel;\pause
+\item Authenticate peers;\pause
+\item Enable secure money transfer;\pause
+\item Provide anonymity;\pause
+\item Authenticate data;\pause
+\end{itemize}
+\item Usually are a claim of designers that must be verified.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Building Blocks}
+\begin{itemize}
+\item Symmetric cryptography;\pause
+\item Cryptographic hashes;\pause
+\item Asymmetric cryptography;\pause
+\item Advanced primitives;\pause
+\item Other security protocols;
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Standard Security Properties}
+\begin{itemize}
+\item Confidentiality;\pause
+\item Integrity;\pause
+\item Timeliness;\pause
+\item Authentication.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Advanced Security Properties}
+\begin{itemize}
+\item Forward secrecy;\pause
+\item Non-repudiation;\pause
+\item Availability;\pause
+\item Anonymity rather than Authenticity;\pause
+\item Plausible Deniability rather than Non-Repudiation;\pause
+\item Transparency instead of Privacy; \pause
+\item Etc...
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Confidentiality}
+\begin{itemize}
+\item Also called secrecy;\pause
+\item Is the usual main goal of cryptography;\pause
+\item Can be provided using symmetric cryptography or asymmetric cryptography;\pause
+\item Symmetric cryptography is not ``clean cut" since it always provide some sort of authentication; \pause
+\item Asymmetric cryptography separate confidentiality from authentication.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Confidentiality Examples}
+\begin{itemize}
+\item A sends to B message M encrypted with shared key Kab;\pause
+\item A sends to B message M encrypted with B's public key.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Integrity}
+\begin{itemize}
+\item Is the main property provided by hash functions and message authentication codes;\pause
+\item Hash function provide ``clean cut'' integrity checking;\pause
+\item MACs provide integrity coupled with authentication;\pause
+\item Integrity provided by theses cryptographic primitives are intended to detect active modification of messages;\pause
+\item Integrity functions can also be used to avoid homomorphic manipulation;\pause
+\item Can be used to avoid reverting operations within protocols;\pause
+\item On itself is a weak property.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Integrity Examples}
+\begin{itemize}
+\item A sends to B the hash of message M;\pause
+\item A sends to B the authentication code of message M with Key Kab.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Timeliness}
+\begin{itemize}
+\item Anchor the messages to the correct timing;\pause
+\item Can be provided by nonces (number used only once);\pause
+\item Can be provided by Timestamps;\pause
+\item Timestamps are usually coupled with time to live requirements;\pause
+\item Allows for peers to check the ordering of messages;\pause
+\item Allows for peers to check the liveness of other peers.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Timeliness Examples}
+\begin{itemize}
+\item A sends to B the nounce Na and recieves back Nb,Na ;\pause
+\item A sends to B the timestamp of the generation time of the messages.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Authentication}
+\begin{itemize}
+\item Is a basic but usually composed property;\pause
+\item Comes in different shapes depending on the basic building blocks used;\pause
+\item Aliveness - A runs the protocol with B;\pause
+\item Weak Agreement - A runs the protocol with B but B does not authenticate A;\pause
+\item Non-Injective Agreement - Key exchange;\pause
+\item Mutual Agreement - A runs the protocol with B but B does not authenticate A.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Two facets of authentication}
+\begin{itemize}
+\item Authentication can serve both for assigning responsibility and for giving credit;\pause
+\item An ``authenticated'' message M from a principal A to a principal B may be used in at least two distinct ways:\pause
+\begin{itemize}
+\item B may believe that the message M is being supported by A’s authority;\pause
+\item B may attribute credit for the message M to A.\pause
+\end{itemize}
 \end{itemize}
 \end{frame}
 
 
+\begin{frame}{Two facets of authentication}
+\begin{itemize}
+\item Some protocols are adequate for assigning responsibility but not for giving credit, and vice versa;\pause
+\item The two facets of authentication are most clearly separate in protocols
+that rely on asymmetric cryptosystems;\pause
+\item Even when it is proved beyond a reasonable doubt that a principal sent a message, responsibility and credit may not follow.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Views on responsibility and credit}
+\begin{itemize}
+\item An authentication protocol should at least establish responsibility;\pause
+\item There does not seem to be a consensus that an authentication protocol should also
+establish credit;\pause
+\item Once a protocol has set up a channel that speaks for a principal, it is easy to use the channel for establishing credit whenever the need arises;\pause
+\item Establishing credit is a matter of prudence.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Analysis of Authentication}
+\begin{itemize}
+\item Honest protocol participants are expected to follow the rules of the protocol faithfully,and not to try to obtain credit for messages that they did not generate
+themselves. A proof about honest protocol participants may show that a protocol
+establishes responsibility, but not credit;\pause
+\item When an attacker is included as protocol participant, the attacker is not forced
+to follow the rules of the protocol, and may attempt to get undue credit. A proof
+that concerns such an attacker can show that a protocol establishes credit.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Discussion}
+\begin{itemize}
+\item Can give examples of security protocols that have these properties we shown above?\pause
+\item Can you give examples of problems/attacks on security protocols that have these properties we shown above?\pause
+\item How can we avoid problems/attacks on security protocols?
+\end{itemize}
+\end{frame}
 
 {
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
