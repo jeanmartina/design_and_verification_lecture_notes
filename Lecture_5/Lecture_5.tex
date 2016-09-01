@@ -30,12 +30,155 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{}
+\begin{frame}{Disclaimer}
+\begin{block}{Disclaimer!}
+What we will see in the next slides is not a precise scientific description of the properties, but a basis for exemplification of what is out there just to foster discussion.
+\end{block}\pause
 \begin{itemize}
-\item 
+\item We will be seeing common security properties that happen on literature;\pause
+\item The descriptions are solely the lecturer's opinion on the properties and may be wrong.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{List of Advanced Security Properties}
+\begin{itemize}
+\item Forward secrecy;\pause
+\item Non-repudiation;\pause
+\item Plausible Deniability;\pause
+\item Availability;\pause
+\item Eligibility;\pause
+\item Fairness;\pause
+\item Receipt-freeness;\pause
+\item Coercion-resistance;\pause
+\item Privacy; \pause
+\item Anonymity;\pause
+\item Transparency.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Forward Secrecy}
+\begin{itemize}
+\item Forward secrecy relates to the non-interference of short term keys leakage to new short term keys;\pause
+\item It does not relate to long term keys;\pause
+\item Is usually obtained by the negotiation of short term keys only based on long term keys;\pause
+\item Has a complementary property that is Backwards secrecy;\pause
+\item Having both lead to full non-interference among session keys.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Non-repudiation}
+\begin{itemize}
+\item Is the inability to deny knowledge of a message;\pause
+\item Happens as non-repudiation of origin, meaning authorship;\pause
+\item Happens as non-repudiation of destiny, meaning confirmation of reception;\pause
+\item Is usually implemented using asymmetric crypto in digital signature mode;\pause
+\item Can also be achieve by the use of commitments.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Plausible Deniability}
+\begin{itemize}
+\item Is the ability to deny knowledge of a message;\pause
+\item Act the the courter property of Non-Repudiation;\pause
+\item Is implemented shared secret crypto;\pause
+\item Can also happen on origin, destination or both.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Availability}
+\begin{itemize}
+\item Is the property that relates to presence of knowledge whenever needed;\pause
+\item Is difficult to reach by crypto-means;\pause
+\item Is usually reached using replication;\pause
+\item There are some interesting primitives that achieve availability such as secret-sharing.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Eligibility}
+\begin{itemize}
+\item Is the property that states authority to a peer to act;\pause
+\item Usually present on election protocols;\pause
+\item Is related and derived from Authentication;\pause
+\item Can also happen through delegation;\pause
+\item Is implemented in this later case by the usage of tickets;\pause
+\item Can also control the number of times the peer is allowed to do something.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Fairness}
+\begin{itemize}
+\item Fairness is the properties that guarantees that no information is acquired out of the right time;\pause 
+\item In election protocols it means that no early results can be obtained which could influence the remaining voters;\pause
+\item Is usually implemented with encryption (either symmetric or asymmetric);\pause
+\item The keys are them distributed is such a way that only an agreement can enable decryption.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Receipt-freeness}
+\begin{itemize}
+\item Receipt-freeness is the property that the peer does not carry any proof of acts within the protocol;\pause
+\item In election protocols it means that a voter does not gain any information (a receipt) which can be used to prove to a coercer that she voted in a certain way;\pause
+\item It is tricky to achieve when combined with other properties;\pause
+\item Implementation usually is not done using cryptographic means.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Coercion-resistance}
+\begin{itemize}
+\item Coercion-resistance is the property that avoid a peer to act in certain way against its own will and forced by an external entity;\pause
+\item In election protocols it means that a voter cannot cooperate with a coercer to prove to him that she voted in a certain way;\pause
+\item It is usually achieve by using the last commitment within the protocol;\pause
+\item Implementation usually depends of Receipt-freeness but is not a requirement.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Verifiability}
+\begin{itemize}
+\item Is the property that allows for peers to be assured that their interaction was perceived within the protocol;\pause
+\item Is usually implemented using bulletin boards;\pause
+\item In election protocols it can be specialised in:\pause
+\begin{itemize}
+\item Individual verifiability: a voter can verify that her vote was really counted;\pause
+\item Universal verifiability: the published outcome really is the sum of all the votes.
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Privacy}
+\begin{itemize}
+\item Privacy is the property that allows for peers to choose the amount of data that is being release to other peers;\pause
+\item Has a controversial definition since it is related to a personal feeling;\pause
+\item It is intrinsically related to Confidentiality;\pause
+\item In election protocols it means that the system cannot reveal how a particular voter voted;\pause
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Anonymity}
+\begin{itemize}
+\item Anonymity is the property that does not allow identification of peers;\pause
+\item Is usually achieve by using obfuscation techniques;\pause
+\item Usually is implemented with hashes or MACs;\pause
+\item Is a form of plausible deniability.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Transparency}
+\begin{itemize}
+\item Transparency can be defined the distance of a message from ground truth;\pause
+\item It a very new property that is actually being studied still;\pause
+\item Is present in crypto-currency protocols and in health related systems;\pause
+\item Is a dichotomy of Privacy.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Discussion}
+\begin{itemize}
+\item Which other properties did you hear about?\pause
+\item Which are the dichotomies you can see between the properties shown today?\pause
+\item Can you foresee an online activity that you require a property not listed here?
+\end{itemize}
+\end{frame}
 
 
 {
