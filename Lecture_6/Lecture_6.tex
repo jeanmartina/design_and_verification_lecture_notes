@@ -15,7 +15,7 @@
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{-1cm}August-November 2016} 
+\date{\vspace{-.5cm}August-November 2016} 
 \subject{} 
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
 height=\paperheight]{../reusable_images/fundo_UFSC.png}}
@@ -30,12 +30,205 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{}
+\begin{frame}{Needham-Schroeder Shared Key Protocol}
 \begin{itemize}
-\item 
+\item Many existing protocols are derived from the work of Needham and Schroeder (1978);\pause 
+\item Kerberos authentication protocol suite is one of the main used protocols and is derived from NSSKP;\pause
+\item NSSKP is a shared-key authentication protocol designed to generate and propagate a session key which is used for subsequent symmetrically encrypted communication;\pause
+\item There is no public key infrastructure in place.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{NSSKP Goals}
+\begin{itemize}
+\item The goal of the protocol is to establish mutual authentication between two parties A and B in the presence of adversary;\pause
+\item  A and B obtain a secret shared key though authentication server S;\pause
+\item This adversary can intercept messages, delay messages, read and copy messages and generate messages;\pause
+\item This adversary can not learn the secret keys of principals, which they share with the authentication server S.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Assumptions of NSSKP}
+\begin{itemize}
+\item There are three principals, two named A and B, desiring mutual authentication, and
+S, a trusted key serve;\pause
+\item It is assumed that A and B already have secure symmetric communication with
+S using keys $K_{AS}$ and $K_{BS}$ , respectively;\pause
+\item It is assumed that the attacker can not be a legitimate party within the protocol.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Freshness Concepts of NSSKP}
+\begin{itemize}
+\item NSSKP uses nonces which are randomly generated values included in messages and used only once;\pause
+\item If a nonce is generated and sent by one agent in one step and returned by another in a later step, the generator knows that the message is fresh and not a replay from an earlier exchange;\pause
+\item Note that a nonce is not anchored in time. The only assumption is that it has not been used in any earlier interchange, with high probability because it is random and not used twice.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How NSSKP works}
+\begin{itemize}
+\item A makes contact with the authentication server S, sending identities A and B and nonce NA;\pause
+\item S responds with a message encrypted with the key of A. The message contains session key KAB (to be used by A and B) and certificate encrypted with B’s key conveying the session key and A’s identity;\pause
+\item A sends the certificate to B;\pause
+\item B decrypts the certificates and sends his own nonce encrypted by the session key to A; (nonce handshake);\pause
+\item A decrypts the last message and sends modified nonce back to B.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How NSSKP works}
+\begin{block}{Goal}
+By the end of the message exchange both A and B share the secret key and both are assured in the presence of each other. 
+\end{block}
+\end{frame}
+
+\begin{frame}{How to Understand Security Protocols}
+\begin{itemize}
+\item There are questions to ask for any step in any protocol or ceremony:\pause
+\begin{itemize}
+\item What is the sender trying to say with this message?\pause
+\item What is the receiver entitled to believe after receiving the message?\pause
+\item Can I use less resources to achieve the same goals?\pause
+\item Isn't there anything that I did not catch?
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Notation For Protocol Description}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+$A, B$ and $S$ & Agent names (Alice, Bob and Steve) \\\pause
+$N_A$ & Random number chosen by Alice (Nonce)\\\pause
+$K_{AS}$ & Long term key shared between Alice and Steve\\\pause
+$\{X\}_{K_{AS}}$ & Encrypted message using $K_{AS}$\\
+\end{tabular}
+\end{center}
+\label{default}
+\end{table}%
+\end{frame}
+
+\begin{frame}{NSSKP Message Exchange}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{NSSKP - What is being said!}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+& {\color{red}Hi Steve, this is Alice, I want to talk to Bob, }\\
+& {\color{red}that's the identifier of my request.}\\\pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+& {\color{red}Alice I am sending you a secret which shows}\\ 
+& {\color{red}your identifier, Bob's identity and the key }\\
+& {\color{red}for you to talk to him. Here is a ticket to send}\\
+& {\color{red}Bob the key and relate it to your identity.}\\\pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+& {\color{red}Bob there is a ticket for you!}\\ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+
+\begin{frame}{NSSKP - What is being said!}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+& {\color{red}I want to challenge Alice to see if she }\\ 
+& {\color{red}has the key on the ticket.}\\ \pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\\pause
+& {\color{red}Challenge accepted. Take it back!}\\ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{NSSKP Knowledge Exchange}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+& {\color{green}Alice Knows $N_A$ and $K_{AS}$}\\ \pause
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+& {\color{green}Steve Knows $N_A$, $K_{AB}$, $K_{BS}$ and $K_{AS}$}\\ \pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+& {\color{green}Alice Knows $N_A$, $K_{AS}$ and $K_{AB}$}\\ \pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+& {\color{green}Bob Knows $N_B$, $K_{BS}$ and $K_{AB}$}\\ \pause
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+& {\color{green}Alice Knows $N_A$, $N_B$, $K_{AS}$ and $K_{AB}$}\\ \pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Informal Verification of Security Protocols}
+\begin{itemize}
+\item What to ask about a protocol or ceremony:\pause
+\begin{itemize}
+\item Are both authentication and secrecy assured?\pause
+\item Is it possible to impersonate one or more of the parties?\pause
+\item Is it possible to interject messages from an earlier exchange (replay attack)?\pause
+\item What tools can an attacker deploy?\pause
+\item If any key is compromised, what are the consequences?
+\end{itemize}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Denning and Sacco Attack}
+\begin{itemize}
+\item Denning and Sacco pointed out that the compromise of a session key has bad consequences. An intruder can reuse an old session key and pass it off as a new one;\pause
+\item Suppose Charlie has acquired $K_{AB}$ from a past run of the protocol, and start the protocol from message 3;\pause
+\end{itemize}
+\begin{block}{Bob will believe he is talking to Alice}\pause
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+3. & C $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+4. & B $\rightarrow$ C:  $\{ N_B \}_{K_{AB}}$ \\\pause
+5. & C $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{block}
+\end{frame}
+
+\begin{frame}{Denning and Sacco Attack}
+\begin{itemize}
+\item Message 3 is not protected by any freshness component;\pause
+\item There is no way for B to know if the $K_{AB}$ it receives is current;\pause
+\item Lack of freshness on message 3 means an intruder has unlimited time to crack an old session key and reuse it.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Bauer, et al. Attack on NSSKP}
+\begin{itemize}
+\item Bauer, et al. pointed out that if key $K_{AS}$ were compromised, anyone could impersonate A and establish communication with any other party;\pause
+\item Usually the lost of control on long term secrets affects deeply how a protocol operate;\pause
+\item It is important to have mechanisms that could revoke keys or at least render them unusable after sometime.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Questions!}
+\begin{itemize}
+\item These flaws persisted for almost 10 years before they were discovered. Why did it take that long to see that?\pause
+\item Ask what happens if a key is broken is a fair question?\pause
+\item How can you address these design faults pointed out by Denning and Sacco and Bauer et al.?
+\end{itemize}
+\end{frame}
 
 
 {
