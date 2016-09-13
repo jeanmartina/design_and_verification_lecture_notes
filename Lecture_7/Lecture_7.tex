@@ -10,7 +10,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \author{Design and Verification of Security Protocols and Security Ceremonies}
-\title{\vspace{-.2cm}Classical Protocols \\ Yahalom/Woo-Lam}
+\title{\vspace{-.2cm}Classical Protocols}
 %\setbeamercovered{transparent} 
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
@@ -30,12 +30,283 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{}
+\begin{frame}{Protocols to See Today!}
 \begin{itemize}
-\item 
+\item Otway-Rees;\pause
+\item Woo–Lam;\pause
+\item Neuman–Stubblebine;\pause
+\item Wide-Mouth Frog protocol;\pause
+\item Yahalom.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Otway-Rees Protocol}
+\begin{itemize}
+\item By Dave Otway and Owen Rees in 1987
+\item A protocol for efficient mutual authentication (via a mutually trusted third party). \item It assures both principal parties of the timeliness of the interaction without the use of clocks or double encipherment. 
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Otway-Rees Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B:M,A,B,\{N_{A},M,A,B\}_{K_{AS}}$ \\\pause
+2. & $B\rightarrow S:M,A,B,\{N_{A},M,A,B\}_{{K_{{AS}}}},\{N_{B},M,A,B\}_{{K_{{BS}}}}$ \\\pause
+3. & $S\rightarrow B:M,\{N_{A},K_{{AB}}\}_{{K_{{AS}}}},\{N_{B},K_{{AB}}\}_{{K_{{BS}}}}$ \\\pause
+4. & $B\rightarrow A:M,\{N_{A},K_{{AB}}\}_{{K_{{AS}}}}$ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Otway-Rees Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Two Attacks on Otway-Rees Protocol}
+\begin{itemize}
+\item A malicious intruder can arrange for A and B to end up with
+different keys:\pause
+\begin{enumerate}
+\item After step 3, B has received $K_{AB}$;\pause
+\item An intruder then intercepts the fourth message;\pause
+\item The intruder resends message 2, so S generates a new key $K'_{AB}$, sent to B;\pause
+\item The intruder intercepts this message too, but sends to A the message $M,\{N_a,K_{AB}\}_{K_{AS}}$;\pause
+\item A has $K'_{AB}$, while B has $K_{AB}$. \pause
+\end{enumerate}
+\item Another problem: although the server tells B that A used a nonce, B doesn’t know if this was a replay of an old message.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Woo–Lam Protocol}
+\begin{itemize}
+\item Woo–Lam refers to various computer network authentication protocols designed by Simon S. Lam and Thomas Woo;\pause
+\item The most common is the one published in 1992;\pause
+\item The protocols enable two communicating parties to authenticate each other and to exchange session keys;\pause
+\item It involves the use of a trusted key distribution center (KDC) to negotiate between the parties;\pause
+\item Both symmetric-key and public-key variants have been described.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Woo–Lam Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B: A$ \\\pause
+2. & $B\rightarrow A: NB$ \\\pause
+3. & $A\rightarrow B: \{NB\}_{K_{AS}} $ \\\pause
+4. & $B\rightarrow S: \{A,\{NB\}_{K_{AS}}\}_{K_{BS}}$ \\\pause
+5. & $S\rightarrow B: \{NB\}_{K_{BS}}$
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Woo–Lam Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attack on Woo–Lam Protocol}
+\begin{itemize}
+\item Two simultaneous inbound authentication attempts initiated by an attacker C,
+where C is also considered as any other regular participant; \pause
+\item C pretends to be A in one and retains its own identity C for the other; \pause
+\item C obtains nonces from B for both runs and encrypts the nonce NB intended for A with its own server key and returns it to B, retaining its original identity; \pause
+\item When the nonce is returned by the server, it leads B to believe that it has authenticated A, whereas A has not even participated in either of the runs. 
+\item The attack is complete. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Neuman–Stubblebine Protocol}
+\begin{itemize}
+\item Created by Neuman and Stubblebine in 1993;\pause
+\item It allows individuals communicating over such a network to prove their identity to each other;\pause
+\item This protocol utilizes time stamps, but does not depend on synchronized clocks;\pause
+\item It has an Establishment phase and a Communication phase.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Neuman–Stubblebine Protocol - Establishment}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B: A, N_{A}$ \\\pause
+2. & $B\rightarrow S: B,N_{B},\{A,N_{A},T_{B}\}_{K_{BS}}$ \\\pause
+3. & $S\rightarrow A:\{B,N_{A},K_{AB},T_{B}\}_{K_{AS}},\{A,K_{AB},T_{B}\}_{K_{BS}},N_{B}$ \\\pause
+4. & $A\rightarrow B:\{A,K_{AB},T_{B}\}_{K_{BS}},\{N_{B}\}_{K_{AB}}$
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Neuman–Stubblebine Protocol - Communication}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B: \{A,K_{AB},T_{B}\}_{K_{BS}},N'_{A}$ \\\pause
+2. & $B\rightarrow A: N'_{B},\{N'_{A}\}_{K_{AB}}$ \\\pause
+3. & $A\rightarrow B: \{N'_{B}\}_{K_{AB}}$ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+
+\begin{frame}{Neuman–Stubblebine Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
+\begin{itemize}
+\item Weidenbach Attack:
+\item The server can be used by the attacker to generate an arbitrary number of messages $\{A,K_{AB},T_{B}\}_{K_{BS}}$. As the attacker knows that the only thing that changes is the key $K_{AB}$ he can maker the Server to generate material for known-plain text attacks;
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
+\begin{itemize}
+\item Paradox Attack:
+\item While B sends message (2) to S, C intercepts the ciphertext {A, N x, Tb}Kbs and the nonce N b generated by B . C ignores the message (3) (bypasses Step (2) and Step (3)) and sends {A, N x, To}Kbs together with {Nb}N x as the message (4) to B. Because both
+{A, Nx, Tb}Kbs and {A, Kab, Tb}Kbs have the same format  B cannot distinguish one from the other;
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
+\begin{itemize}
+\item Oracle Attack:
+\item C first intercepts the ticket in Establishment. Although C cannot decrypt, C may send the intercepted ticket and a forged nonce, $N'_{C}$, to B;\pause
+\item Upon receiving the message, B verifies the ticket. If it is valid, B responds $\{N'_{C}\}_{K_{AB}}$ and a new nonce, $N'_{B}$, to A;\pause
+\item Once C intercepts this message, he uses B as an oracle and starts a new session with
+B;
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
+\begin{itemize}
+\item C sends the nonce $N'_{B}$, he just received coupled the same ticket to B. Upon receiving the message, B sends back $\{N'_{C}\}_{K_{AB}}$ and a new nonce, $N''_{B}$, to A;\pause
+\item X can intercept it and get the encrypted nonce $\{N'_{B}\}_{K_{AB}}$;\pause
+\item Finally, C successfully passes the first authentication session of B by sending the $\{N'_{B}\}_{K_{AB}}$ back to B.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Wide-Mouth Frog protocol Protocol}
+\begin{itemize}
+\item The protocol was first described under the name "The Wide-mouthed-frog Protocol" in the paper "A Logic of Authentication" (1990), which introduced BAN Logic;\pause
+\item The paper gives no rationale for the protocol's whimsical name;\pause
+\item It allows individuals communicating over a network to prove their identity to each other while also preventing eavesdropping or replay attacks, and provides for detection of modification and the prevention of unauthorized reading.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Wide-Mouth Frog protocol Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow S:A,\{T_{A},B,K_{{AB}}\}_{{K_{{AS}}}}$ \\\pause
+2. & $S\rightarrow B:\{T_{S},A,K_{{AB}}\}_{{K_{{BS}}}}$ \\\pause
+\end{tabular}
+\end{center}
+\end{table}%
+To prevent active attacks, some form of authenticated encryption (or message authentication) must be used.
+\end{frame}
+
+
+\begin{frame}{Wide-Mouth Frog protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Problems on Wide-Mouth Frog protocol}
+\begin{itemize}
+\item A global clock is required;\pause
+\item The server S has access to all keys;\pause
+\item The value of the session key $K_{AB}$ is completely determined by A, who must be competent enough to generate good keys;\pause
+\item It can replay messages within the period when the timestamp is valid. A is not assured that B exists;\pause
+\item The protocol is stateful. This is usually undesired because it requires more functionality and capability from the server. For example, S must be able to deal with situations in which B is unavailable.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attack on Wide-Mouth Frog protocol}
+\begin{itemize}
+\item The value of the session key $K_{AB}$ is completely determined by an untrusted peer in the protocol;\pause
+\item A Man-in-the-middle attack is trivial;\pause
+\item C can deliberately reuse keys to defeat the protocols goals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Yahalom Protocol}
+\begin{itemize}
+\item Unpublished protocol. It appears on BAN Logic paper as personal communication by the authors with Yahalom;\pause
+\item Yahalom uses a trusted arbitrator to distribute a shared key between two people;\pause
+\item This protocol can be considered as an improved version of Wide Mouth Frog protocol.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Yahalom Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B:A,N_{A}$ \\\pause
+2. & $B\rightarrow S:B,\{A,N_{A},N_{B}\}_{K_{BS}}$ \\\pause
+3. & $S\rightarrow A:\{B,K_{{AB}},N_{A},N_{B}\}_{{K_{{AS}}}},\{A,K_{{AB}}\}_{{K_{{BS}}}}$ \\\pause
+4. & $A\rightarrow B:\{A,K_{{AB}}\}_{{K_{{BS}}}},\{N_{B}\}_{{K_{{AB}}}}$ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Yahalom Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attacks on Yahalom Protocol}
+\begin{itemize}
+\item Bob completed his protocol execution believing he was communicating with Alice, but it actually was not so;\pause
+\item Because the first encrypted chunk in the fourth message does not include the terms used for proving the freshness of the session key, such as NB, the encrypted chunk
+could be a replayed message. 
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Discussion}
+\begin{itemize}
+\item What the classical protocols tell us in terms of designs?\pause
+\item What the classical protocols tell us in terms of flaws?\pause
+\item How most of these flaws were discovered?
+\end{itemize}
+\end{frame}
 
 
 {
