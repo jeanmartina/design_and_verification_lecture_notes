@@ -30,13 +30,224 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{}
+\frame{
+	\frametitle{Needham-Schroeder Public Key Protocol}
 \begin{itemize}
-\item 
+\item Many existing protocols are derived from the work of Needham and Schroeder (1978);\pause 
+\item The handshake done by many public key cryptographic protocols are derived from NSPKP;\pause
+\item NSPKP is a public-key authentication protocol designed to generate and propagate a session key which is used for subsequent symmetrically encrypted communication;\pause
+\item There is no public key infrastructure in place, but the identities related top public keys are an assumption.
+\end{itemize}
+}
+
+\frame{\frametitle{Needham-Schroeder Public Key Protocol}
+
+		\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\ \pause
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\ \pause
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\begin{frame}{NSPKP Goals}
+\begin{itemize}
+\item The goal of the protocol is to establish mutual authentication between two parties A and B in the presence of adversary;\pause
+\item A and B obtain a secret shared key though direct communication using public key cryptography;\pause
+\item This adversary can intercept messages, delay messages, read and copy messages and generate messages;\pause
+\item This adversary can not learn the privates keys of principals.
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Freshness Concepts of NSPKP}
+\begin{itemize}
+\item NSPKP uses nonces which are randomly generated values included in messages and used only once;\pause
+\item If a nonce is generated and sent by one agent in one step and returned by another in a later step, the generator knows that the message is fresh and not a replay from an earlier exchange;\pause
+\item Note that a nonce is not anchored in time. The only assumption is that it has not been used in any earlier interchange, with high probability because it is random and not used twice.
+\end{itemize}
+\end{frame}
 
+\begin{frame}{Needham-Schroeder Public Key Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\frame{\frametitle{Needham-Schroeder Public Key Protocol Description}
+
+		\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\
+& Alice send to Bob an encrypted nonce\\\pause
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\
+& Bob returns to Alice her Nonce together with his own\\\pause
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+& Alice returns to Bob his Nonce
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+
+
+
+\frame{
+	\frametitle{Needham-Schroeder Public Key Protocol Assumptions}
+	\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\
+& Only Alice knows Na before message 1\\
+& Only Bob can decrypt message 1\\\pause
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\
+& Only Bob knows Nb before message 2\\
+& Bob knows Na because he can decrypt\\
+& Ohly Alice can decrypt message 2\\\pause
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+& Alice knows Nb because she can decrypt \\
+& Only Bob can decrypt message 3\\\pause
+&{\color{red}Why do we need message 3?}
+\end{tabular}
+\end{center}
+\end{table}%
+		
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Public Key Protocol Interpretation}
+		\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\
+& Alice starts a session Na is the session control\\
+& Alice's identity (A) is for Bob to know whom \\
+& to encrypt message 2\\\pause
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\
+& Bom sens Na back to keep the session\\
+&{\color{green} Bob uses Nb to authenticate Alice on message 3}\\
+& When receiving message 2 Alice knows that only Bob could\\
+&have created it because it contains Na\\\pause
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+& Alice already authenticated Bob. Now she wants to authenticate to Bob\\
+& When receiving message 3 Bob knows that only Alice could\\
+& have created it because it contains Nb
+\end{tabular}
+\end{center}
+\end{table}%
+		
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Public Key Protocol Objectives}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item The protocols authenticates Alice to Bob;\pause
+\item The protocols authenticate Bob to Alice;\pause
+\item By the usage of fresh Nonces, we obtain the aliveness property in the protocols;\pause
+\item {\color{red}But, Is it secure?}
+\end{itemize}
+\end{table}%
+}
+
+\frame{
+	\frametitle{Almighty Attack - Rules of the Game}
+\begin{itemize}
+\item Charlie is a very powerful attacker. \pause
+\item He can:\pause
+\begin{itemize}
+\item Intercept anything in the network;\pause
+\item Block anything in the network;\pause
+\item Replay Messages;\pause
+\item Create new messages with what he learned with the traffic;\pause
+\item Behave as a normal agent;\pause
+\end{itemize}
+\item He can not:\pause
+\begin{itemize}
+\item Break cryptography;\pause
+\item Guess random numbers.
+\end{itemize}
+\end{itemize}
+
+}
+
+
+\frame{
+	\frametitle{Almighty Attack - Lowe's Attack}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ C:  $\{| N_a , A |\}_{K_c}$ \\\pause
+{\color{red}1'. }& {\color{red}C(A) $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ }\\
+{\color{red}2'. }& {\color{red}B $\rightarrow$ C(A):  $\{| N_a , N_b |\}_{K_a}$ }\\\pause
+2. & C $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\\pause
+3. & A $\rightarrow$ C:  $\{| N_b |\}_{K_c}$ \\\pause
+{\color{red}3'. }& {\color{red}C $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ }\\
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item Bob believes to be talking to Alice , while he is talking to Charlie;\pause
+\item Charlie uses Alice as an oracle to answers Bob's challenges;\pause
+\item Charlie can use Nb to prove to Bob he is Alice.
+\end{itemize}
+\end{table}%
+}
+
+
+\frame{
+	\frametitle{Lowe's Attack - Facts}
+\begin{itemize}
+\item Gavin Lowe was a random Computer Theoretician at Oxford;\pause
+\item The attack looks easy, but it took 15 years to be found; \pause
+\item The attack works because of a change on the threat model; \pause
+\item But his attack is important because it was only discovered with the help of a formal verification tool.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{How Lowe did it?}
+\begin{itemize}
+\item He used a tool called a model checker;\pause
+\item This tool has able to saturate the protocol execution;\pause
+\item The idea is to explore all the reachable states of the model;\pause
+\item This verification is considered bound to the amount of peers and parallel runs tested.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{What we learned from this example?}
+\begin{itemize}
+\item Some tests are too hard to be executed by hand;\pause
+\item Theoretical tool are a good breakthrough for any area;\pause
+\item Event very simple and well studied protocols may contain hidden failures;\pause
+\item We learned to be diligent and somewhat paranoid on protocols and how they achieve their goals.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Discussion}
+\begin{itemize}
+\item Which other protocols do you believe there are failures that were not detected yet?\pause
+\item How do we correct Lowe's attack on NSPKP?\pause
+\item Is formally prove a protocol enough to claim it is secure?\pause
+\item What if a user drop an assumption of the protocol? Is it still secure?\pause
+\item How secure is formally secure?
+\end{itemize}
+}
 
 {
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
