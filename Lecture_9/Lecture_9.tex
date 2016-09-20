@@ -1,0 +1,268 @@
+\documentclass[12pt,table,xcolor={dvipsnames}]{beamer}
+\usetheme{Pittsburgh}
+\usecolortheme{seagull}
+%\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{Design and Verification of Security Protocols and Security Ceremonies}
+\title{\vspace{-.2cm}Threat Modelling for Symbolic Evaluation \\ Dolev-Yao}
+%\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+%\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
+\institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
+\date{\vspace{-1cm}August-November 2016} 
+\subject{} 
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_UFSC.png}}
+\begin{document}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_capa.png}}
+\begin{frame}
+\titlepage
+\includegraphics[scale=0.3]{../reusable_images/brasao_PPGCC.jpg}
+\end{frame}
+}
+
+\frame{
+	\frametitle{How to Start!}
+\begin{itemize}
+\item How can we tell if a cryptographic protocol or a security ceremony is secure? \pause
+\item Phrased another way, how can we be sure that a given protocol/ceremony meets a given security goal?\pause
+\item Whom are we defending against?
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Notes about Security}
+\begin{itemize}
+\item The sense of security is directly related to the threats available within the environment;\pause
+\item One would feel unsafe in a setting where others would feel secure;\pause
+\item Is security a sensation?
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Notes about Insecurity}
+\begin{itemize}
+\item As the security is related to the threats:\pause
+\begin{itemize}
+\item Assume no threats and you will be secure!\pause
+\item Assume weaker threats and you still be secure;\pause
+\item Are we able to foresee all the threats in a scenario?
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Security and Insecurity comparison}
+\begin{itemize}
+\item We can have two different things, one that we consider secure and another that we don't;\pause
+\item How do we compare two different things in terms of security?\pause
+\item We need a baseline for comparison;\pause
+\item The name of this baseline is a Threat Model. 
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Changing the Baseline Matters}
+\begin{itemize}
+\item We can recall the NSPKP example:
+\begin{itemize}
+\item Needham and Schroeder assumed no internal could be an attacker;\pause
+\item Everything worked for 15 years;\pause
+\item Gavin Lowe assumed an internal could engage in the protocol to take advantage;\pause
+\item The protocol is considered broken since.
+\end{itemize} 
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Importance of Threat Models}
+\begin{block}{Lesson from NSSPK}
+To claim security and not to be surprised in the future you need to clearly specify the threat model of your protocol or ceremony and it must be as close as the environment where the protocol or ceremony will run within. 
+\end{block}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Threat Model}
+\begin{itemize}
+\item D. Dolev and A. Yao. “On the security of public key protocols”. IEEE Transactions on Information Theory, 29(2):198-208. 1983;\pause
+\item The original motivation for the paper was to verify public key protocols against active attackers with considerable power;\pause
+\item The setting for the paper was the cold war times;\pause
+\item Most mechanised formal methods for security analysis use some version of this model.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Assumptions}
+\begin{itemize}
+\item The underlying public key system is 'perfectly secure':\pause
+\begin{itemize}
+\item One-way functions are unbreakable;\pause
+\item Public directory is secure and cannot be tampered with;\pause
+\item Everyone has access to all public keys;\pause
+\item Only the peer knows his private key.
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Assumptions}
+\begin{itemize}
+\item Adversary has complete control over the entire network:\pause
+\begin{itemize}
+\item He acts as a legitimate user;\pause
+\item He can obtain any message from any party;\pause
+\item He can initiate the protocol with any party, and can be a receiver to any party in the network;\pause
+\item Can read any message, decompose it into parts and re-assemble.\pause
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Assumptions}
+\begin{itemize}
+\item Concurrent executions of the protocol can occur;\pause
+\item The attacker cannot gain partial knowledge and perform statistical tests;\pause
+\item The attacker can decrypt if and only if he knows the correct key;\pause
+\item We assumes that cryptographic functions have no special properties.
+\end{itemize}
+}
+
+
+\frame{
+	\frametitle{The Dolev-Yao Benefits}
+\begin{itemize}
+\item The model has the following features, which can be viewed as either benefits or restrictions depending on what you are trying to do:\pause
+\begin{itemize}
+\item It is simple to describe protocols in this model;\pause
+\item Adversary has unlimited power, so although this is a conservative approach this may not be realistic;\pause
+\item Protocols have a 'black-box' nature, which means that linking individual protocols with others is extremely difficult. Dolev-Yao helps on that.
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Features}
+\begin{itemize}
+\item Secrecy properties: Alice is given a message M as input, and starts exchanging messages with Bob, with the goal of sending message M to Bob in a secret way;\pause
+\item The security property is that an adversary cannot recover M, even if actively interfering with the protocol;\pause
+\item No other security properties are considered.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Features}
+\begin{itemize}
+\item Stateless parties: The main limitation on the honest parties is that they are stateless;\pause 
+\item The messages transmitted by a party at every step of the protocol are a function of their initial knowledge and the message they just received;
+\item In particular, parties cannot use information collected from previous messages not addressed to them; 
+\item For this reason, these protocols have been named "ping-pong" protocols;\pause 
+\item We observe that the stateless restriction is only put on the honest parties, and the adversary can maintain state, record communications, and store values that are subsequently used in the construction of messages;
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Features}
+\begin{itemize}
+\item Concurrent execution: The adversary can start an arbitrary number of protocol executions, involving different sets of parties, where each player can participate in several concurrent executions;\pause
+\item In this respect, the model considered here is more general than the computational model considered at the time, which focused on single protocol execution;\pause
+\item The computational cryptography community started addressing the important issue of concurrency only in the 90's.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Dolev-Yao Features}
+\begin{itemize}
+\item In the Dolev-Yao model, there are two kinds of active parties: honest participants
+and the adversary; \pause
+\item The honest participants follow the steps of the protocol without deviation;\pause
+\item The attacker do not follow the rules;\pause
+\item The peers do not share long term secrets, even the attacker keeps things for himself.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{ Dolev-Yao in Practice}
+\begin{itemize}
+\item All the peers start with some knowledge set, including all public information, peers names and their own random numbers to be used as nonces;\pause
+\item If a message is cast in the network, it go to the destination's knowledge set and the attackers knowledge set (Eavesdrop);
+\end{itemize}
+}
+
+
+\frame{
+	\frametitle{ Dolev-Yao in Practice}
+\begin{itemize}
+\item From the attacker knowledge set:
+\begin{itemize}
+\item He can decrypt whatever he has the key to do so and re-encrypt whatever he know with the keys he has at hand (Encryption);\pause
+\item He can break down messages to atomic components (Atomic Breakdown);\pause
+\item He can re-arrange all the components he knows in all possible ways to form new messages (Fabricate);
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{ Dolev-Yao in Practice}
+\begin{itemize}
+\item He can modify messages in transit (Modify);\pause
+\item He can replay any message he collects from traffic (Replay);\pause
+\item He can prevent the delivery of any message (Block);\pause
+\item He can engage legitimately with other peers on the protocol (Initiate);\pause
+\item He can re-arrange the order of the messages in traffic (Re-order);\pause
+\item He can mimic the identity of any peer in the network (Spoof). 
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Dolev-Yao Implementation}
+\begin{itemize}
+\item It is usually logically implemented;\pause
+\item It uses free variables to allow for the powers to happen;\pause
+\item Although the amount of knowledge the attacker can have is potentially unbound, it is finite;\pause
+\item Some techniques create other significant limits to the Dolev-Yao Threat Model.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Discussion}
+\begin{itemize}
+\item Is Dolev-Yao enough to put a security protocols against and claim it secure?\pause
+\item Can you foresee some capability missing?\pause
+\item Is Dolev-Yao sufficient to compare two security protocols?\pause
+\item What can go wrong when we compare two security protocols that use Dolev-Yao as Threat Model
+\end{itemize}
+}
+
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_capa.png}}
+\begin{frame}
+
+{\LARGE Questions????}
+
+\end{frame}
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_capa.png}}
+\begin{frame}
+\includegraphics[scale=0.8]{../reusable_images/cc_logo_arge.png}\hspace{0.5cm} 
+\includegraphics[scale=0.95]{../reusable_images/by.png}
+
+\vspace{1cm}
+This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+\end{frame}
+}
+
+\end{document}
