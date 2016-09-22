@@ -1,0 +1,246 @@
+\documentclass[12pt,table,xcolor={dvipsnames}]{beamer}
+\usetheme{Pittsburgh}
+\usecolortheme{seagull}
+%\usepackage[utf8]{inputenc}
+\usepackage{fontspec}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{multirow}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{Design and Verification of Security Protocols and Security Ceremonies}
+\title{\vspace{-.2cm}B.U.G. Threat Model Family}
+%\setbeamercovered{transparent} 
+\setbeamertemplate{navigation symbols}{} 
+%\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
+\institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
+\date{\vspace{-1cm}August-November 2016} 
+\subject{} 
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_UFSC.png}}
+\begin{document}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_capa.png}}
+\begin{frame}
+\titlepage
+\includegraphics[scale=0.3]{../reusable_images/brasao_PPGCC.jpg}
+\end{frame}
+}
+
+\frame{
+	\frametitle{Dolev-Yao Considerations}
+\begin{itemize}
+\item DY can be considered the standard threat model to study security protocols;\pause. \item The DY attacker controls the entire network although he cannot perform cryptanalysis;\pause
+\item The DY model has remarkably favoured the discovery of significant protocol flaws,
+but the attacker has significantly changed today;\pause
+\item To become an attacker has never been so easy.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{A Family of Variations for Dolev-Yao}
+\begin{itemize}
+\item B.U.G;\pause
+\item The Rational Attacker;\pause
+\item The General Attacker;\pause
+\item Multi Attacker;\pause
+\item Distributed Attacker.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The B.U.G Threat Model}
+\begin{itemize}
+\item B.U.G. dates back to 2002;\pause
+\item The name is a permuted acronym for the “Good”, the “Bad” and the “Ugly”;\pause
+\item This model attempts stricter adherence to reality by partitioning the participants into three groups;\pause
+\item The Good principals would follow the protocol;\pause
+\item The Bad would in addition try to subvert it;\pause
+\item The Ugly would be ready to either behaviour.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The B.U.G Threat Model Insights}
+\begin{itemize}
+\item A principal may change role and decide to attempt illegal exploitation of a protocol although he has always conformed to it so far;\pause
+\item It changes the idea of a single attacker since anyone could attack;\pause
+\item The principle behind this threat model is that the attackers do not share long term secrets.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The B.U.G Threat Model Issues}
+\begin{itemize}
+\item It is unclear on how dynamic updates should be on the behaviour:\pause
+\begin{itemize}
+\item One could change behaviour after every single message;\pause
+\item Either sent, received or cast;\pause
+\end{itemize}
+\item This complicates a lot the mechanisations of the attacker, because all behaviour is possible.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Rational Attacker Threat Model}
+\begin{itemize}
+\item BUG appeared overly detailed, and was simplified as The Rational Attacker Threat
+Model;\pause
+\item It was conceived in 2008;\pause
+\item The Rational Attacker let any principal make cost/benefit decisions at any time
+to either behave according to the protocol or not;\pause
+\item Analysing a protocol under the Rational Attacker requires specifying each principal’s
+cost and benefit functions.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Rational Attacker Insights}
+\begin{itemize}
+\item The Rational Attacker  seems out of reach for the current mechanised approaches, especially for bound verification techniques;\pause
+\item Although complex to mechanise, the Rational Attacker is more realistic than B.U.G.;\pause
+\item In the wild, it is common to the attacker to make cost/benefit analysis when to engage or not;\pause
+\item The Rational Attacker bring all game theory into the protocols' scenarios.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Rational Attacker Issues}
+\begin{itemize}
+\item The Rational Attacker is not clear whether the cost/benefit function is fixed or variable;\pause
+\item One would argue that the objectives of the attacker are not static and that it would change depending on the gains made so far;\pause
+\item Mechanisation is not only and issue of representativeness of the formal verification technique, but an entangled problem.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The General Attacker Threat Model}
+\begin{itemize}
+\item  The General Attacker abstracts away the actual cost/benefit analysis in a simplified model;\pause
+\item Any principal may behave as a Dolev-Yao attacker;\pause
+\item The change of perspective in RA or in GA with respect to DY is clear: principals
+do not collude for a common aim but, rather, each of them acts for his own personal
+sake;\pause
+\item By contrast, a pair of colluding DY attackers is equivalent to a single DY
+attacker in terms of generated attacks;\pause
+\begin{itemize}
+\item This is confirmed by a formal proof.
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The General Attacker Insights}
+\begin{itemize}
+\item  Endowing each principal with the entire potential of a DY attacker signifies that he may send any of the messages he can form to anyone;\pause
+\item Such messages include both the legal ones, conforming to the protocol in use, and the illegal, forged ones, which he can build from the analysis of the traffic though without cryptanalysis.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The General Attacker Issues}
+\begin{itemize}
+\item  It was suggested that the General Attacker is similar to Dolev-Yao provided that all principals reveal their secrets to the attacker (Augmented Dolev-Yao); \pause
+\item They appear equivalent: \pause
+\begin{itemize}
+\item Any illegal message that a principal may send in General Attacker may be sent by the
+single augmented Dolev-Yao attacker;\pause
+\item This happens because he knows everyone’s secrets.
+\end{itemize}  
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The General Attacker versus Augmented Dolev-Yao}
+\begin{itemize}
+\item Augmented Dolev-Yao entangles the interpretation of attacks where principals attack each other;\pause
+\item The single attacker will always be the originator of any attack, complicating the  identification of the real perpetrator;\pause
+\item For attacks against the attacker, the model will feature the attacker attacking himself, thus stretching the interpretation of the victim to an extreme;\pause 
+\item Perpetrator and victim are naturally expressed in GA because its gist is exactly to reflect modern everyone-for-themselves scenarios.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Multi Attacker Threat Model}
+\begin{itemize}
+\item In the Multi Attacker each principal may behave as a Dolev-Yao attacker but will never reveal his long-term secrets;\pause
+\item It was conceived in 2011;\pause
+\item Multi Attacker  can be seen as a refinement of General Attacker with some rationality that avoids the trivial impersonation attacks;\pause
+\item It helps to understand some new types of attacks.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Multi Attacker Insights}
+\begin{itemize}
+\item Analysing protocols under the Multi Attacker threat model yields unknown scenarios of retaliation or anticipation;\pause
+\item If an attack can be retaliated under Multi Attacker, such a scenario will not occur under Rational Attacker because the cost of attacking clearly overdoes its benefit, and hence the attacker will not attack in the first place;\pause
+\item This changes the game of how a powerful attacker would attack, because retaliation may let the attacker vulnerable.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Multi Attacker Issues}
+\begin{itemize}
+\item The Multi Attacker do not use its full capabilities to derive partial information;\pause
+\item By being powerful and knowing what is going on, he could anticipate what other Multi Attacker have on their knowledge set;\pause
+\item This is not encoded on the attacker;\pause
+\item This would make competition between the attacker fiercer.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Distributed Attacker Threat Model}
+\begin{itemize}
+\item The Distributed Attacker is an evolution of the Multi Attacker where the principals can have different powers;\pause
+\item It was conceived in 2015;\pause
+\item It was tailored for a layered strategy for security ceremonies;\pause
+\item It is reasonable to use in protocol verification because the real capabilities of the multi-attacker we have are not clear and eventually will not be the same.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The Distributed Attacker Insights}
+\begin{itemize}
+\item It is based on Martina-Carlos ideas of breaking down the power of the Dolev-Yao attacker;\pause
+\item Acknowledging that each multi-attacker has different powers it a good strategy that can show us the competition between the attacker for the target;\pause
+\item It was shown that we can mechanise such attacker using First-Order Logics;\pause
+\item No issues we brought so far due to its freshness within the protocol and ceremony verification communities.
+\end{itemize}
+}
+ 
+\frame{
+	\frametitle{Discussion}
+\begin{itemize}
+\item Can you identify a protocol where using one of this evolutions of Dolev-Yao can bring insights of new attacks?\pause
+\item Which one would make more sense today?\pause
+\item Choosing one Threat Model to work invalidate the others?
+\end{itemize}
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_capa.png}}
+\begin{frame}
+
+{\LARGE Questions????}
+
+\end{frame}
+}
+
+{
+\usebackgroundtemplate{\includegraphics[width=\paperwidth,
+height=\paperheight]{../reusable_images/fundo_capa.png}}
+\begin{frame}
+\includegraphics[scale=0.8]{../reusable_images/cc_logo_arge.png}\hspace{0.5cm} 
+\includegraphics[scale=0.95]{../reusable_images/by.png}
+
+\vspace{1cm}
+This work is licensed under the Creative Commons Attribution 4.0 International License. To view a copy of this license, visit http://creativecommons.org/licenses/by/4.0/.
+\end{frame}
+}
+
+\end{document}
