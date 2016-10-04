@@ -5,20 +5,29 @@
 \usepackage{fontspec}
 \usepackage{amsmath}
 \usepackage{listings}
+\usepackage{mathtools}
 \usepackage{multirow}
 \usepackage{amsfonts}
 \usepackage{amssymb}
 \usepackage{graphicx}
 \author{Design and Verification of Security Protocols and Security Ceremonies}
-\title{\vspace{-.2cm}}
+\title{\vspace{-.2cm} Protocol Verification Techniques - Belief Logics}
 %\setbeamercovered{transparent} 
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{-1cm}August-November 2016} 
+\date{\vspace{-.5cm}August-November 2016} 
 \subject{} 
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
 height=\paperheight]{../reusable_images/fundo_UFSC.png}}
+
+\newcounter{saveenumi}
+\newcommand{\seti}{\setcounter{saveenumi}{\value{enumi}}}
+\newcommand{\conti}{\setcounter{enumi}{\value{saveenumi}}}
+
+\resetcounteronoverlays{saveenumi}
+
+
 \begin{document}
 
 {
@@ -30,16 +39,451 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-
- 
 \frame{
-	\frametitle{Discussion}
+	\frametitle{Disclaimer}
+\begin{block}{Disclaimer!}
+This lecture is heavily based on material Professor Ravi Sandhu's from University of Texas San Antonio, and from material from "Paul Syverson and Iliano Cervesato, The Logic of Authentication Protocols, Foundations of Security Analysis and Design, LNCS 2171, SpringerVerlag, 2001."
+\end{block}
+
+}
+
+\frame{
+	\frametitle{BAN Logic}
 \begin{itemize}
-\item Can you identify a protocol where using one of this evolutions of Dolev-Yao can bring insights of new attacks?\pause
-\item Which one would make more sense today?\pause
-\item Choosing one Threat Model to work invalidate the others?
+\item BAN is a logic of belief;\pause
+\item In an analysis, the protocol is first idealised into messages containing assertions;\pause 
+\item Then assumptions are stated;\pause
+\item Finally conclusions are inferred based on the assertions in the idealized messages and those assumptions.
 \end{itemize}
 }
+
+\frame{
+	\frametitle{The language of BAN}
+\begin{itemize}
+\item In all of these expressions, X is either a message or a formula;\pause
+\item As we will see, every formula can be a message, but not every message is a
+formula.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The language of BAN}
+\begin{itemize}
+\item P believes X :\pause
+\item P received X : \pause
+\item P said X :\pause
+\item P controls X :\pause
+\item fresh(X) : \pause
+\end{itemize}
+}
+
+\frame{
+	\frametitle{The language of BAN}
+\begin{itemize}
+\item P $\xleftrightarrow{k}$  Q : \pause
+\begin{itemize}
+\item k will never be discovered by any principal but P, Q, or a principal trusted by P or Q. (The last case is necessary, since the server often sees, indeed generates, k.);\pause
+\end{itemize}
+\item PK(P, k) : \pause
+\begin{itemize}
+\item The secret key, $k^{-1}$, corresponding to k will never be discovered by any principal but P or a principal trusted by P;\pause
+\end{itemize}
+\item $\{X\}_k$ :\pause
+\begin{itemize}
+\item This is the notation for encryption;\pause
+\item Principals can recognize their own messages;\pause
+\item Encrypted messages are uniquely readable and verifiable as such by holders of the right keys.
+\end{itemize} 
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Message Meaning}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P\quad believes  \quad P \xleftrightarrow{k}  Q \\
+P \quad received \quad \{X\}_k  \end{split}}
+{P \quad believes \quad Q \quad said \quad X}
+    \end{split}
+  \end{displaymath}\pause
+  
+\begin{itemize}
+\item “If P receives X encrypted with k and if P believes k is a good key for talking with Q, then P believes Q once said X.”
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Message Meaning}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P\quad believes  \quad PK(Q, k) \\
+P \quad received \quad \{X\}_{k^{-1}}  \end{split}}
+{P \quad believes \quad Q \quad said \quad X}
+    \end{split}
+  \end{displaymath}\pause
+  
+\begin{itemize}
+\item There is no explicit distinction between signing and encryption;\pause 
+\item Both are represented by $\{X\}_{k}$ or $\{X\}_{k^{-1}}$;\pause
+\item The distinction is implicit in the notation for the key used: k or k-1.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Nonce Verification}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes \quad fresh(X)\\
+P \quad believes \quad Q \quad said \quad X \end{split}}
+{P \quad believes \quad Q \quad believes \quad X}
+    \end{split}
+  \end{displaymath}\pause
+  
+\begin{itemize}
+\item This rule allows promotion from the past to the present (something said some time in the past to a present belief);\pause
+\item In order to be applied, X should not contain any encrypted text.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Jurisdiction}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes \quad Q \quad controls \quad X\\
+P \quad believes \quad Q \quad believes\quad X\end{split}}
+{P \quad believes \quad X}
+    \end{split}
+  \end{displaymath}\pause
+  
+\begin{itemize}
+\item  The jurisdiction rule allows inferences that a principal believes a key is good, even though it is a random string that he has never seen before.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Belief Conjuncatenation}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes \quad X\\
+P \quad believes \quad Y
+\end{split}}
+{P \quad believes (X,Y)}
+    \end{split}
+  \end{displaymath}\pause
+  
+\begin{itemize}
+\item  The obvious rules apply to beliefs concerning concatenations of messages/conjunctions of formulae;\pause
+\item Concatenations of messages and conjunctions of formulae are both represented as (X,Y) in the above rules.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Belief Conjuncatenation}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes \quad Q \quad said (X, Y)
+\end{split}}
+{P \quad believes \quad Q \quad said \quad X}
+    \end{split}
+  \end{displaymath}\pause
+
+\vspace{1cm}
+
+    \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes \quad Q \quad believes \quad (X, Y)
+\end{split}}
+{P \quad believes \quad Q \quad believes \quad X}
+    \end{split}
+  \end{displaymath}
+
+}
+
+\frame{
+	\frametitle{BAN Rules: Freshness Conjuncatenation}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes \quad fresh(X)
+\end{split}}
+{P \quad believes \quad fresh(X, Y )}
+    \end{split}
+  \end{displaymath}\pause
+  
+\begin{itemize}
+\item This is how nonces lend freshness to other messages in BAN.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Rules: Receiving Rules}
+	
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad believes  \quad P \xleftrightarrow{k}  Q \\
+P \quad received \quad \{X\}_{k}
+\end{split}}
+{P \quad received \quad X}
+    \end{split}
+  \end{displaymath}\pause
+  
+  \begin{displaymath}
+    \begin{split}
+	 \frac{\begin{split}
+P \quad received \quad (X, Y )
+\end{split}}
+{P \quad received \quad X}
+    \end{split}
+  \end{displaymath}\pause  
+  \begin{itemize}
+\item A principal receiving a message also receives sub-messages he can uncover.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{BAN Protocol Analysis}
+\begin{enumerate}
+\item Choose a protocol;\pause
+\item Write assumptions about the initial state;\pause
+\item Annotate the protocol: \pause
+\begin{itemize}
+\item For each message transmission P → Q : M in the protocol, assert Q received M;\pause
+\end{itemize}
+\item Use the logic to derive the beliefs held by protocol principals.
+\end{enumerate}
+}
+
+\begin{frame}{Chosen Protocol: Needham-Schroeder Shared Key Protocols}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\frame{
+	\frametitle{Idealized Needham-Schroeder Shared Key Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+2. & S $\rightarrow$ A:  $\{N_{A}, A \xleftrightarrow{K_{AB}} B, fresh(K_{AB}), \{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}}, from \quad S$ \\\pause
+3. & A $\rightarrow$ B:  $\{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}}, from \quad S$ \\\pause
+4. & B $\rightarrow$ A:  $\{N_{B}, A \xleftrightarrow{K_{AB}} B \}_{K_{AB}}, from \quad B$ \\\pause
+5. & A $\rightarrow$ B:  $\{N_{A}, A \xleftrightarrow{K_{AB}} B \}_{K_{AB}}, from \quad A$\\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\frame{
+	\frametitle{Idealized Needham-Schroeder Shared Key Protocol}
+\begin{itemize}
+\item Plaintext is omitted;\pause
+\item It is assumed that principals recognize their own messages;\pause
+\item With a shared key, if a recipient can decrypt a message, she can tell who it is from; \pause 
+\item What is inside the encrypted messages is also altered; \pause
+\item Specifically, the key $k_{AB}$ is replaced by assertions about it;\pause
+\item Also in the last message $N_{B} - 1$ is changed to just $N_{B}$.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Assumptions}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+P1 & $A \quad believes \quad A \xleftrightarrow{K_{AS}} S$ \\\pause
+P2 & $B \quad believes \quad B \xleftrightarrow{K_{BS}} S$ \\\pause
+P3 & $A \quad believes \quad S \quad controls \quad A \xleftrightarrow{K_{AB}} B$ \\\pause
+P4 & $B \quad believes \quad S \quad controls \quad A \xleftrightarrow{K_{AB}} B$ \\\pause
+P5 & $A \quad believes \quad S \quad controls \quad fresh(A \xleftrightarrow{K_{AB}} B)$ \\\pause
+P6 & $A \quad believes \quad fresh(N_{A})$ \\\pause
+P7 & $B \quad believes \quad fresh(N_{B})$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Assumptions}
+\begin{itemize}
+\item P1, P2 are beliefs in quality of long term keys;\pause
+\item S has similar beliefs but are not relevant;\pause
+\item P3, P4, P5 are jurisdiction beliefs;\pause
+\item P6, P7 are beliefs in freshness of each principal's nonces.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Annotations}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+P8 & $A \quad recieved \quad \{N_{A}, A \xleftrightarrow{K_{AB}} B, fresh(K_{AB}),$ \\
+ & $\{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}}, from \quad S$ \\\pause
+P9 & $B \quad recieved \quad \{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}}, from \quad S$ \\\pause
+P10 & $A \quad recieved \quad \{N_{B}, A \xleftrightarrow{K_{AB}} B \}_{K_{AB}}, from \quad B$ \\\pause
+P11 & $B \quad recieved \quad \{N_{A}, A \xleftrightarrow{K_{AB}} B \}_{K_{AB}}, from \quad A$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Derivations}
+\begin{enumerate}
+\item A believes S said ($(\{N_{A}, A \xleftrightarrow{K_{AB}} B, fresh(K_{AB}),\{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}})$);\pause
+\begin{itemize}
+\item By Message Meaning using P1, P8;\pause
+\end{itemize}
+\item A believes fresh($(\{N_{A}, A \xleftrightarrow{K_{AB}} B, fresh(K_{AB}),\{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}})$);\pause
+\begin{itemize}
+\item By Freshness Conjuncatenation using 1, P6;\pause
+\end{itemize}
+\item 3. A believes S believes ($(\{N_{A}, A \xleftrightarrow{K_{AB}} B, fresh(K_{AB}),\{ A \xleftrightarrow{K_{AB}} B \}_{K_{BS}})$) ;\pause
+\begin{itemize}
+\item By Nonce Verification using 2, 1;
+\end{itemize}
+\seti
+\end{enumerate}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Derivations}
+\begin{enumerate}
+\conti
+\item A believes S believes ($A \xleftrightarrow{K_{AB}} B $);\pause 
+\begin{itemize}
+\item By Belief Conjuncatenation using 3;\pause
+\end{itemize}
+\item A believes S believes fresh($A \xleftrightarrow{K_{AB}} B $);\pause 
+\begin{itemize}
+\item By Belief Conjuncatenation using 3;\pause
+\end{itemize}
+\item A believes ($A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Jurisdiction using 4, P3;
+\end{itemize}
+\seti
+\end{enumerate}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Derivations}
+\begin{enumerate}
+\conti
+\item A believes fresh($A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Jurisdiction using 4, P5;\pause
+\end{itemize}
+
+Here we finished proving Alice's Beliefs. She believes $K_{AB}$ is secure and fresh. \pause
+
+\item B believes S said ($A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Message Meaning using P2, P9;\pause
+\end{itemize}
+Bob believes $K_{AB}$ is secure, but has nothing regarding freshness. 
+\seti
+\end{enumerate}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Derivations}
+	We need to introduce a new Assumption:\pause
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+P12 & $B \quad believes \quad fresh(A \xleftrightarrow{K_{AB}} B)$  \\
+\end{tabular}
+\end{center}
+\end{table}\pause
+\begin{block}{Attention!}
+This is sketchy, since Bob believes that a random value generated by someone else is fresh.
+\end{block}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Derivations}
+\begin{enumerate}
+\conti
+\item B believes S believes ($A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Nonce Verification using P12, 8;\pause
+\end{itemize}
+\item B believes $A \xleftrightarrow{K_{AB}} B $;\pause
+\begin{itemize}
+\item By Jurisdiction using P4, 9.
+\end{itemize}
+\seti
+\end{enumerate}
+}
+
+\frame{
+	\frametitle{Needham-Schroeder Shared Key Protocol Derivations}
+\begin{enumerate}
+\conti
+\item A believes B said ($N_{B}, A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Message Meaning using 6, P10;\pause
+\end{itemize}
+\item A believes fresh($N_{B}, A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Freshness Conjuncatenation using 7;\pause
+\end{itemize}
+\item A believes B believes ($N_{B}, A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Nonce Verification using 12, 11;\pause
+\end{itemize}
+\item A believes B believes ($A \xleftrightarrow{K_{AB}} B $);\pause
+\begin{itemize}
+\item By Belief Conjuncatenation using 13.
+\end{itemize}
+\seti
+\end{enumerate}
+}
+
+\frame{
+	\frametitle{BAN's Limitations}
+\begin{itemize}
+\item BAN logic assumes that agents never publish secrets, but BAN logic does not verify this;\pause
+\item BAN logic assumes that agents can recognize type flaws, but BAN logic does not verify the absence of type flaws; \pause
+\item In particular, BAN logic assumes that agents always recognize and ignore messages that they have sent themselves; \pause
+\item BAN logic assumes that all protocol participants are honest. No compromised agents are considered. Attackers do not have valid keys.
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Needham's Quotation}
+\begin{block}{Roger Needham}
+“The main contribution of BAN logic was to make the study of 3-line protocols intellectually respectable.”
+\end{block}
+}
+
+
+
+
 
 {
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
