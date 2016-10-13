@@ -10,7 +10,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \author{Design and Verification of Security Protocols and Security Ceremonies}
-\title{\vspace{-.2cm}}
+\title{\vspace{-.2cm}Protocol Verification Techniques - State Enumeration}
 %\setbeamercovered{transparent} 
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
@@ -30,16 +30,252 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-
- 
 \frame{
-	\frametitle{Discussion}
+	\frametitle{Before we start!}
+\begin{block}{Before we start!}
+To be able to talk about Lowe's attack using FDR and CSP, we need first to get the grips with the theory behind communicating sequential processes (CSP).
+\end{block}
+}
+
+\frame{
+	\frametitle{Communicating Sequential Processes}
 \begin{itemize}
-\item Can you identify a protocol where using one of this evolutions of Dolev-Yao can bring insights of new attacks?\pause
-\item Which one would make more sense today?\pause
-\item Choosing one Threat Model to work invalidate the others?
+\item Communicating Sequential Processes (CSP) is a formal language for describing patterns of interaction in concurrent systems;\pause
+\item It is a member of the family of mathematical theories of concurrency known as process algebras;\pause
+\item CSP was first described in a 1978 paper by Tony Hoare;\pause
+\item CSP has been practically applied in industry as a tool for specifying and verifying the concurrent aspects of a variety of different systems.
 \end{itemize}
 }
+
+
+\frame{
+	\frametitle{Communicating Sequential Processes}
+\begin{itemize}
+\item The theory of CSP itself is also still the subject of active research, including work to increase its range of practical applicability;\pause
+\item CSP allows the description of systems in terms of component processes that operate independently, and interact with each other solely through message-passing communication;\pause
+\item  The relationships between different processes, and the way each process communicates with its environment, are described using various process algebraic operators;\pause
+\item Using this algebraic approach, quite complex process descriptions can be easily constructed from a few primitive elements.
+\end{itemize}
+}
+ 
+\frame{
+	\frametitle{CSP Primitives}
+\begin{itemize}
+\item CSP provides two classes of primitives in its process algebra:\pause
+\item Events:\pause
+\begin{itemize}
+\item Events represent communications or interactions;\pause
+\item Events are assumed to be indivisible and instantaneous;\pause
+\item They may be atomic names, compound names, or input/output events;\pause
+\end{itemize}
+\item Primitive processes:\pause
+\begin{itemize}
+\item Primitive processes represent fundamental behaviours;\pause
+\item STOP (the process that communicates nothing, also called deadlock);\pause
+\item SKIP (which represents successful termination).
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{CSP Algebraic Operators}
+${\displaystyle {\begin{array}{lcll}
+Proc&::=&{\textit {STOP}}&\;\\
+&|&{\textit {SKIP}}&\;\\\pause
+&|&e\rightarrow {\textit {Proc}}&({\text{prefixing}})\\\pause
+&|&{\textit {Proc}}\;\Box \;{\textit {Proc}}&({\text{external}}\;{\text{choice}})\\\pause
+&|&{\textit {Proc}}\;\sqcap \;{\textit {Proc}}&({\text{nondeterministic}}\;{\text{choice}})\\\pause
+&|&{\textit {Proc}}\;\vert \vert \vert \;{\textit {Proc}}&({\text{interleaving}})\\\pause
+&|&{\textit {Proc}}\;|[\{X\}]|\;{\textit {Proc}}&({\text{interface}}\;{\text{parallel}})\\\pause
+&|&{\textit {Proc}}\setminus X&({\text{hiding}})\\\pause
+&|&{\textit {Proc}};{\textit {Proc}}&({\text{sequential}}\;{\text{composition}})\\\pause
+&|&\mathrm {if} \;b\;\mathrm {then} \;{\textit {Proc}}\;\mathrm {else} \;Proc&({\text{boolean}}\;{\text{conditional}})\\\pause
+&|&{\textit {Proc}}\;\triangleright \;{\textit {Proc}}&({\text{timeout}})\\\pause
+&|&{\textit {Proc}}\;\triangle \;{\textit {Proc}}&({\text{interrupt}})\end{array}}}$
+} 
+
+\frame{
+	\frametitle{CSP Example - Vending Machine}
+\begin{itemize}
+\item One of the archetypal CSP examples is an abstract representation of a chocolate vending machine and its interactions with a person wishing to buy some chocolate;\pause
+\item This vending machine might be able to carry out two different events, “coin” and “choc”;\pause
+\item They which represent the insertion of payment and the delivery of a chocolate respectively. 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{CSP Example - Vending Machine}
+\begin{itemize}
+\item A machine which demands payment before offering a chocolate can be written as:
+\begin{itemize}\pause
+\item ${\displaystyle {\textit {VendingMachine}}={\textit {coin}}\rightarrow {\textit {choc}}\rightarrow {\textit {STOP}}}$\pause
+\end{itemize}
+\item A person who might choose to use a coin or card to make payments could be modelled as:\pause
+\begin{itemize}
+\item ${\displaystyle {\textit {Person}}=({\textit {coin}}\rightarrow {\textit {STOP}})\Box ({\textit {card}}\rightarrow {\textit {STOP}})})$\pause
+\end{itemize}
+\item These two processes can be put in parallel, so that they can interact with each other;\pause
+\item The behaviour of the composite process depends on the events that the two processes must synchronise on:\pause
+\begin{itemize}
+\item ${\displaystyle {\textit {VendingMachine}}\left\vert \left[\left\{{\textit {coin}},{\textit {card}}\right\}\right]\right\vert {\textit {Person}}\equiv} $\\${\displaystyle {\textit {coin}}\rightarrow {\textit {choc}}\rightarrow {\textit {STOP}}}$
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{CSP Example - Vending Machine}
+\begin{itemize}
+
+\item If synchronization was only required on “coin”, we would obtain:\pause
+\begin{itemize}
+\item ${\displaystyle {\textit {VendingMachine}}\left\vert \left[\left\{{\textit {coin}}\right\}\right]\right\vert {\textit {Person}}\equiv}$ \\ ${\displaystyle \left({\textit {coin}}\rightarrow {\textit {choc}}\rightarrow {\textit {STOP}}\right)\Box \left({\textit {card}}\rightarrow {\textit {STOP}}\right)}$\pause
+\end{itemize}
+\item If we abstract this latter composite process by hiding the “coin” and “card” events:\pause
+\begin{itemize}
+\item ${\displaystyle \left(\left({\textit {coin}}\rightarrow {\textit {choc}}\rightarrow {\textit {STO}}P\right)\Box \left({\textit {card}}\rightarrow {\textit {STOP}}\right)\right)}$ \\${\displaystyle  \setminus \left\{{\textit {coin}},card\right\}}$\pause
+\end{itemize}
+\item We get the non-deterministic process:\pause
+\begin{itemize}
+\item ${\displaystyle \left({\textit {choc}}\rightarrow {\textit {STOP}}\right)\sqcap {\textit {STOP}}}$\pause
+\end{itemize}
+\item This process which either offers a “choc” event and then stops, or just stops;\pause
+\item Externally non-determinism has been introduced.
+\end{itemize}
+} 
+
+\frame{\frametitle{Needham-Schroeder Public Key Protocol}
+
+		\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\ \pause
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\ \pause
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\begin{frame}{NSPKP Goals}
+\begin{itemize}
+\item The goal of the protocol is to establish mutual authentication between two parties A and B in the presence of adversary;\pause
+\item A and B obtain a secret shared key though direct communication using public key cryptography;\pause
+\item This adversary can intercept messages, delay messages, read and copy messages and generate messages;\pause
+\item This adversary can not learn the privates keys of principals.
+\end{itemize}
+\end{frame}
+
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item $MSG1 \equiv \{ Msg1.a.b.Encrypt.k.n_a.a' |$\\$ a \in Initiator, a' \in Initiator, b \in Responder,$\\$k \in Key, n_a \in Nonce\},$\pause
+\item $MSG2 \equiv \{Msg2.b.a.Encrypt.k.n_a.n_b |$\\$
+a \in Initiator, b \in Responder,$\\$
+k \in Key, n_a \in Nonce, n_b \in Nonce\},$\pause
+\item $MSG3 \equiv \{Msg3.a.b.Encrypt.k.n_b |$\\$
+a \in Initiator, b \in Responder, k \in Key, n_b \in Nonce\},$\pause
+\item $MSG \equiv MSG1 \cup MSG2 \cup MSG3. $
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item Standard communications in the system will be modelled by the channel comm;\pause
+\item We also want to model the fact that the intruder can fake or intercept messages, and so we introduce extra channels fake and intercept;\pause
+\item ${\displaystyle channel \quad comm, fake, intercept : MSG.} $\pause
+\item This will ensure that the receiver of a faked message is not aware that it is a fake, and that the sender of an intercepted message is not aware that it is intercepted. 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We introduce two extra channels, defining the external interface of the protocol;\pause 
+\item We represent a request from a user for initiator ''a" to connect with responder ''b" by the event $user.a.b$; \pause
+\item We represent the resulting session by the event $session.a.b$;\pause
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We also add channels to represent the state of the agents:\pause
+\begin{itemize}
+\item We represent the initiator ''a" thinking it is taking part in a run of the protocol with ''b"
+by the event $I\_running.a.b$;\pause
+\item We represent the responder ''b" thinking it is taking part in a run of the protocol with ''a" by the event $R\_running.a.b$; \pause
+\item We represent the initiator committing to the session by the $I\_commit.a.b$;\pause
+\item We represent the responder committing to the session by $R\_commit.a.b$;\pause
+\end{itemize}
+\item We declare these channels by: 
+\item  ${\displaystyle channel \quad user, session, I\_running, B\_running,}$\\${\displaystyle  I\_commit, B\_.commit : Initiator.Responder.} $
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We will represent a responder with identity ''a", who has a single nonce $n_a$, by the CSP process $INITIATOR(a, na)$.;\pause
+\item If we want to consider a responder with more than one nonce, then we can compose several such processes, either sequentially or interleaved;\pause
+\item Ignoring, for the moment, the possibility of intruder action, the process can be defined by: 
+\begin{itemize}
+\item  ${\displaystyle INITIATOR(a, n_a) \equiv  user.a?b \rightarrow I\_.running.a.b \rightarrow}$\\
+ ${\displaystyle comm!Msg1.a.b.Encrypt.key( b ) .n_a,a \rightarrow}$\\
+ ${\displaystyle comm.Msg2.b.a.Encrypt.key( a) ?n_a'.n_b \rightarrow}$\\
+ ${\displaystyle if \quad n_a = n_a'}$\\
+ ${\displaystyle \quad then \quad comm!Msg3.a.b.Encrypt.key(b).n_b \rightarrow}$\\
+ ${\displaystyle \quad I\_commit.a.b \rightarrow session.a.b \rightarrow SKIP}$\\
+ ${\displaystyle else \quad STOP. } $
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We now introduce the possibility of enemy action by applying a renaming to the above process;\pause 
+\item Our renaming should ensure that message ls and message 3s sent by the initiator can be intercepted;\pause
+\item And message 2s can be faked;\pause
+\item We define an initiator with identity A and nonce Na by:
+${\displaystyle INITIATOR1 \equiv INITIATOR(A, N_a)}$\\
+${\displaystyle [[comm.Msg1 \leftarrow comm.Msg1 , comm.Msg1 \leftarrow intercept.Msg1,}$\\
+${\displaystyle comm.Msg2 \leftarrow comm.Msg2, comm.Msg2 \leftarrow fake.Msg2,}$\\
+${\displaystyle comm.Msg3 \leftarrow comm.Msg3, comm.Msg3 \leftarrow intercept.Msg3]].}$\\
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder}
+\begin{itemize}
+\item The intruder should be able to:\pause
+\begin{itemize}
+\item Overhear and/or intercept any messages being passed in the system;\pause
+\item Decrypt messages that are encrypted with his own public key, so as to learn new nonces;\pause
+\item Introduce new messages into the system, using nonces he knows;\pause
+\item Replay any message he has seen (possibly changing plain-text parts), even if he does not understand the contents of the encrypted part;\pause
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder}
+\begin{itemize}
+\item Replay any message he has seen (possibly changing plain-text parts), even if he does not understand the contents of the encrypted part;\pause
+\item We assume that the intruder is a user of the computer network;\pause
+\item  We will define the most general (i.e. the most non-deterministic) intruder who can act as above;\pause
+\item We consider an intruder with identity I, with public key $K_i$, who initially knows a nonce $N_i$. 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder}
+\begin{block}{To be continued....}
+On next lecture we will follow from here...
+\end{block}
+} 
+
 
 {
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
