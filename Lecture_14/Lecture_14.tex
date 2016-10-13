@@ -10,7 +10,7 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \author{Design and Verification of Security Protocols and Security Ceremonies}
-\title{\vspace{-.2cm}}
+\title{\vspace{-.2cm}Protocol Verification Techniques - State Enumeration - Continuation}
 %\setbeamercovered{transparent} 
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
@@ -30,14 +30,311 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
+\frame{
+	\frametitle{Before we start!}
+\begin{block}{Attention!}
+This lecture is a continuation of the previous lecture. We will start with a quick glimpse of what need to be remembered to continue with the contents.
+\end{block}
+}
 
+
+\frame{
+	\frametitle{CSP Primitives}
+\begin{itemize}
+\item CSP provides two classes of primitives in its process algebra:
+\item Events:
+\begin{itemize}
+\item Events represent communications or interactions;
+\item Events are assumed to be indivisible and instantaneous;
+\item They may be atomic names, compound names, or input/output events;
+\end{itemize}
+\item Primitive processes:
+\begin{itemize}
+\item Primitive processes represent fundamental behaviours;
+\item STOP (the process that communicates nothing, also called deadlock);
+\item SKIP (which represents successful termination).
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{CSP Algebraic Operators}
+${\displaystyle {\begin{array}{lcll}
+Proc&::=&{\textit {STOP}}&\;\\
+&|&{\textit {SKIP}}&\;\\
+&|&e\rightarrow {\textit {Proc}}&({\text{prefixing}})\\
+&|&{\textit {Proc}}\;\Box \;{\textit {Proc}}&({\text{external}}\;{\text{choice}})\\
+&|&{\textit {Proc}}\;\sqcap \;{\textit {Proc}}&({\text{nondeterministic}}\;{\text{choice}})\\
+&|&{\textit {Proc}}\;\vert \vert \vert \;{\textit {Proc}}&({\text{interleaving}})\\
+&|&{\textit {Proc}}\;|[\{X\}]|\;{\textit {Proc}}&({\text{interface}}\;{\text{parallel}})\\
+&|&{\textit {Proc}}\setminus X&({\text{hiding}})\\
+&|&{\textit {Proc}};{\textit {Proc}}&({\text{sequential}}\;{\text{composition}})\\
+&|&\mathrm {if} \;b\;\mathrm {then} \;{\textit {Proc}}\;\mathrm {else} \;Proc&({\text{boolean}}\;{\text{conditional}})\\
+&|&{\textit {Proc}}\;\triangleright \;{\textit {Proc}}&({\text{timeout}})\\
+&|&{\textit {Proc}}\;\triangle \;{\textit {Proc}}&({\text{interrupt}})\end{array}}}$
+} 
+
+\frame{\frametitle{Needham-Schroeder Public Key Protocol}
+
+		\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\ 
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\ 
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\begin{frame}{NSPKP Goals}
+\begin{itemize}
+\item The goal of the protocol is to establish mutual authentication between two parties A and B in the presence of adversary;
+\item A and B obtain a secret shared key though direct communication using public key cryptography;
+\item This adversary can intercept messages, delay messages, read and copy messages and generate messages;
+\item This adversary can not learn the privates keys of principals.
+\end{itemize}
+\end{frame}
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item $MSG1 \equiv \{ Msg1.a.b.Encrypt.k.n_a.a' |$\\$ a \in Initiator, a' \in Initiator, b \in Responder,$\\$k \in Key, n_a \in Nonce\},$
+\item $MSG2 \equiv \{Msg2.b.a.Encrypt.k.n_a.n_b |$\\$
+a \in Initiator, b \in Responder,$\\$
+k \in Key, n_a \in Nonce, n_b \in Nonce\},$
+\item $MSG3 \equiv \{Msg3.a.b.Encrypt.k.n_b |$\\$
+a \in Initiator, b \in Responder, k \in Key, n_b \in Nonce\},$
+\item $MSG \equiv MSG1 \cup MSG2 \cup MSG3. $
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item Standard communications in the system will be modelled by the channel comm;
+\item We also want to model the fact that the intruder can fake or intercept messages, and so we introduce extra channels fake and intercept;
+\item ${\displaystyle channel \quad comm, fake, intercept : MSG.} $
+\item This will ensure that the receiver of a faked message is not aware that it is a fake, and that the sender of an intercepted message is not aware that it is intercepted. 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We introduce two extra channels, defining the external interface of the protocol; 
+\item We represent a request from a user for initiator ''a" to connect with responder ''b" by the event $user.a.b$; 
+\item We represent the resulting session by the event $session.a.b$;
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We also add channels to represent the state of the agents:
+\begin{itemize}
+\item We represent the initiator ''a" thinking it is taking part in a run of the protocol with ''b"
+by the event $I\_running.a.b$;
+\item We represent the responder ''b" thinking it is taking part in a run of the protocol with ''a" by the event $R\_running.a.b$; 
+\item We represent the initiator committing to the session by the $I\_commit.a.b$;
+\item We represent the responder committing to the session by $R\_commit.a.b$;
+\end{itemize}
+\item We declare these channels by: 
+\item  ${\displaystyle channel \quad user, session, I\_running, R\_running,}$\\${\displaystyle  I\_commit, R\_.commit : Initiator.Responder.} $
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We will represent a responder with identity ''a", who has a single nonce $n_a$, by the CSP process $INITIATOR(a, na)$.;\pause
+\item If we want to consider a responder with more than one nonce, then we can compose several such processes, either sequentially or interleaved;\pause
+\item Ignoring, for the moment, the possibility of intruder action, the process can be defined by: 
+\begin{itemize}
+\item  ${\displaystyle INITIATOR(a, n_a) \equiv  user.a?b \rightarrow I\_.running.a.b \rightarrow}$\\
+ ${\displaystyle comm!Msg1.a.b.Encrypt.key( b ) .n_a,a \rightarrow}$\\
+ ${\displaystyle comm.Msg2.b.a.Encrypt.key( a) ?n_a'.n_b \rightarrow}$\\
+ ${\displaystyle if \quad n_a = n_a'}$\\
+ ${\displaystyle \quad then \quad comm!Msg3.a.b.Encrypt.key(b).n_b \rightarrow}$\\
+ ${\displaystyle \quad I\_commit.a.b \rightarrow session.a.b \rightarrow SKIP}$\\
+ ${\displaystyle else \quad STOP. } $
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Specification using CSP}
+\begin{itemize}
+\item We now introduce the possibility of enemy action by applying a renaming to the above process;\pause 
+\item Our renaming should ensure that message ls and message 3s sent by the initiator can be intercepted;\pause
+\item And message 2s can be faked;\pause
+\item We define an initiator with identity A and nonce Na by:
+${\displaystyle INITIATOR1 \equiv INITIATOR(A, N_a)}$\\
+${\displaystyle [[comm.Msg1 \leftarrow comm.Msg1 , comm.Msg1 \leftarrow intercept.Msg1,}$\\
+${\displaystyle comm.Msg2 \leftarrow comm.Msg2, comm.Msg2 \leftarrow fake.Msg2,}$\\
+${\displaystyle comm.Msg3 \leftarrow comm.Msg3, comm.Msg3 \leftarrow intercept.Msg3]].}$\\
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Slowing Down!}
+\begin{block}{Slowing Down!}
+From this point on we will start to slow down because the content thickens...
+\end{block}
+}
+
+\frame{
+	\frametitle{Lowe's Intruder}
+\begin{itemize}
+\item The intruder should be able to:\pause
+\begin{itemize}
+\item Overhear and/or intercept any messages being passed in the system;\pause
+\item Decrypt messages that are encrypted with his own public key, so as to learn new nonces;\pause
+\item Introduce new messages into the system, using nonces he knows;\pause
+\item Replay any message he has seen (possibly changing plain-text parts), even if he does not understand the contents of the encrypted part;\pause
+\end{itemize}
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder}
+\begin{itemize}
+\item Replay any message he has seen (possibly changing plain-text parts), even if he does not understand the contents of the encrypted part;\pause
+\item We assume that the intruder is a user of the computer network;\pause
+\item  We will define the most general (i.e. the most non-deterministic) intruder who can act as above;\pause
+\item We consider an intruder with identity I, with public key $K_i$, who initially knows a nonce $N_i$. 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder Definition in CSP}
+${\displaystyle I(m1s, m2s, m3s, ns)}$\\\pause
+${\displaystyle \quad comm.Msg1 ? a.b.Encrypt.k.n.a' \rightarrow}$\\
+${\displaystyle \quad if \quad k = K_i \quad then \quad I(m1s, m2s, m3s,ns \cup \{n\})}$\\
+${\displaystyle \quad else \quad I(m1s \cup \{ Encrypt.k.n.a'\}, m2s, m3s, ns)}$\\\pause
+${\displaystyle \quad \Box  intercept.Msg1 ? a.b.Encrypt.k.n.a' \rightarrow}$\\
+${\displaystyle \quad if \quad k = K_i \quad  then \quad I(m1s,m2s, m3s,ns \cup \{n\})}$\\
+${\displaystyle \quad else \quad I(m1s \cup \{ Encrypt.k.n.a'\}, m2s, m3s, ns)}$\\\pause
+${\displaystyle \quad \Box  comm.Msg2?b.a.Encrypt.k.n.n' \rightarrow}$\\
+${\displaystyle \quad if \quad k = K_i \quad then \quad I(m1s, m2s, m3s, ns \cup \{n, n'\})}$\\
+${\displaystyle \quad else \quad I(m1s, m2s \cup { Encrypt.k,n.n'}, m3s, ns)}$\\\pause
+${\displaystyle \quad \Box  intercept.Msg2?b.a.Encrypt.k.n.n' \rightarrow}$\\
+${\displaystyle \quad if \quad k = K_i \quad then \quad I(m1s,m2s, m3s,ns \cup \{n,n'\})}$\\
+${\displaystyle \quad else I(m1s, m2s \cup { Encrypt.k.n.n'}, m3s, ns)}$\\
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder Definition in CSP}
+${\displaystyle \quad \Box   comm.Msg3? a.b.Encrypt.k.n \rightarrow}$\\
+${\displaystyle \quad if \quad k = K_i \quad then \quad I(m1s,m2s, m3s, ns \cup \{n\})}$\\
+${\displaystyle \quad else I(m ls, m2s, rn3s \cup { Encrypt.k.n} , ns)}$\\\pause
+${\displaystyle\quad \Box   intercept.Msg3? a.b.Encrypt.k.n \rightarrow}$\\
+${\displaystyle \quad if \quad k = K_i \quad then \quad I(m1s, m2s, m3s, ns \cup \{n\})}$\\
+${\displaystyle \quad else I(m1s, m2s, m3s \cup { Encrypt.k.n}, ns)}$\\\pause
+${\displaystyle \quad \Box  fake.Msg1?a.b?m :m1s \rightarrow I(m1s, m2s, m3s, ns)}$\\
+${\displaystyle \quad \Box  fake.Msg2?a.b?m :m2s \rightarrow I(m1s, m2s, m3s, ns)}$\\
+${\displaystyle \quad \Box  fake.Msg3?a.b?m :m3s \rightarrow I(m1s, m2s, m3s, ns)}$\\\pause
+${\displaystyle \quad \Box  fake.Msg1?a.blEncrypt?k?n:ns?a' \rightarrow I(m1s, m2s, m3s, ns)}$\\
+${\displaystyle \quad \Box  fake.Msg2?b.a!Encrypt?k?n:ns?n':ns \rightarrow I(m1s, m2s, m3s, ns)}$\\
+${\displaystyle \quad \Box  fake.Msg3?a.b!Encrypt?k?n:ns \rightarrow I(m1s, m2s, m3s, ns). }$\\
+} 
+
+\frame{
+	\frametitle{Lowe's Intruder Definition in CSP}
+\begin{itemize}
+\item We consider an intruder who initially knows the nonce $N_i$:
+\begin{itemize}
+\item ${\displaystyle INTRUDER \equiv I(\{\}, \{\}, \{\}, \{N_i\}).}$\pause
+\end{itemize}
+\item We may now define a system with an intruder:
+\begin{itemize}
+\item ${\displaystyle AGENTS \equiv}$\\
+${\displaystyle INITIATOR1 |[ \{|comm, session.A.B|\}] |RESPONDER1,}$\\
+${\displaystyle SYSTEM \equiv AGENTS |[ \{|fake, comm, intercept |\} ]| INTRUDER. }$\\
+\end{itemize}
+\end{itemize}
+}
+
+\frame{
+	\frametitle{Refining CSP with FDR}
+\begin{itemize}
+\item FDR takes as two inputs, a specification and an implementation, and test whether the implementation refines the specification;\pause
+\item  We are working in the traces model of CSP, so checking for refinement amounts to testing whether each trace of the implementation is also a trace of the specification;
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Testing NSPKP with FDR}
+\begin{itemize}
+\item To test whether the protocol correctly authenticates the responder, we need to find a specification that allows only those traces where the initiator A commits to a session with B only if B has indeed taken part in the protocol run;\pause
+\item The initiator committing to a session is represented by an I\_commit.A.B event; the responder taking part in a run of the protocol with A is represented by R\_running.A.B;\pause
+\item Thus the authenticity of the responder can be tested using the specification AR:
+\begin{itemize}
+\item ${\displaystyle AR_0 \equiv R\_running.A.B \rightarrow I\_commit.A.B \rightarrow AR_0,}$\\
+${\displaystyle A1 \equiv \{|R\_running.A.B , I\_commit.A.B|\} ,}$\\
+${\displaystyle AR \equiv AR_0 ||| RUN(\sum }$ \ ${\displaystyle A1).}$\\
+\end{itemize} 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Testing NSPKP with FDR}
+\begin{itemize}
+\item We now consider authentication of the initiator. The protocol should ensure that the responder B commits to a session with initiator A only if A took part in the protocol run; \pause
+\item Formally, an R\_commit.A.B event should occur only if there has been a corresponding I\_running.A.B event; \pause
+\item This requirement is captured by the specification AI:
+\begin{itemize}
+\item ${\displaystyle AI_0 \equiv I\_running.A.B \rightarrow R_commit.A.B \rightarrow AI_0,}$\\
+${\displaystyle A_2 \equiv \{|I\_running.A.B,R\_commit.A.B|\},}$\\
+${\displaystyle AI \equiv AI_0 ||| RUN(\sum }$ \ ${\displaystyle A2).}$\\
+\end{itemize} 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Testing NSPKP with FDR - the Flaw}
+\begin{itemize}
+\item FDR can be used to discover that SYSTEM does not refine AI;\pause
+\item It finds that after the trace:
+\begin{itemize}
+\item ${\displaystyle (user.A.I , I\_running.A.I ,}$\\
+${\displaystyle intercept.Msg1.A.I.Encrypt.K_i.N_a.A ,}$\\
+${\displaystyle fake.Msgl.A.B.Encrypt.K_b.N_a.A ,}$\\
+${\displaystyle intercept.Msg2.B.A.Encrypt.K_a.N_a.N_b ,}$\\
+${\displaystyle fake.Msg2.I.A.Encrypt.K_a.N_a.N_b ,}$\\
+${\displaystyle intercept.Msg3.A.I.Encrypt.K_i.N_b ,}$\\
+${\displaystyle fake.Msg3.A.B.Encrypt.K_b.N_b) }$\\
+\end{itemize} 
+\end{itemize}
+} 
+
+\frame{
+	\frametitle{Lowe's Attack - Translated}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ C:  $\{| N_a , A |\}_{K_c}$ \\
+{\color{red}1'. }& {\color{red}C(A) $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ }\\
+{\color{red}2'. }& {\color{red}B $\rightarrow$ C(A):  $\{| N_a , N_b |\}_{K_a}$ }\\
+2. & C $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\
+3. & A $\rightarrow$ C:  $\{| N_b |\}_{K_c}$ \\
+{\color{red}3'. }& {\color{red}C $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ }\\
+\end{tabular}
+\end{center}
+\begin{itemize}
+\item Bob believes to be talking to Alice , while he is talking to Charlie;\pause
+\item Charlie uses Alice as an oracle to answers Bob's challenges;\pause
+\item Charlie can use Nb to prove to Bob he is Alice.
+\end{itemize}
+\end{table}%
+}
  
 \frame{
 	\frametitle{Discussion}
 \begin{itemize}
-\item Can you identify a protocol where using one of this evolutions of Dolev-Yao can bring insights of new attacks?\pause
-\item Which one would make more sense today?\pause
-\item Choosing one Threat Model to work invalidate the others?
+\item Would Lowe be able to find this attack by hand?\pause
+\item What else could be testes using this strategy?\pause
+\item Was it the methodology or the Threat Model?
 \end{itemize}
 }
 
