@@ -10,12 +10,12 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \author{Design and Verification of Security Protocols and Security Ceremonies}
-\title{\vspace{-.7cm}Security Properties}
+\title{\vspace{-.2cm}Classical Protocols \\ Needham-Schroeder Protocol Family}
 %\setbeamercovered{transparent} 
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{-1cm}August-November 2016} 
+\date{\vspace{.2cm}March-June 2018} 
 \subject{} 
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
 height=\paperheight]{../reusable_images/fundo_UFSC.png}}
@@ -30,172 +30,253 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{Security Protocols}
+\begin{frame}{Needham-Schroeder Shared Key Protocol}
 \begin{itemize}
-\item The focus of security protocols is on secure communications;\pause
-\item Two or more parties are involved;\pause
-\item Communication is carried over an insecure network;\pause
-\item Cryptography is used to achieve some goal.
+\item Many existing protocols are derived from the work of Needham and Schroeder (1978);\pause 
+\item Kerberos authentication protocol suite is one of the main used protocols and is derived from NSSKP;\pause
+\item NSSKP is a shared-key authentication protocol designed to generate and propagate a session key which is used for subsequent symmetrically encrypted communication;\pause
+\item There is no public key infrastructure in place.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Security Protocols Goals}
+\begin{frame}{NSSKP Goals}
 \begin{itemize}
-\item Guided by user needs:\pause
-\begin{itemize}
-\item Provide an end-to-end encryption channel;\pause
-\item Authenticate peers;\pause
-\item Enable secure money transfer;\pause
-\item Provide anonymity;\pause
-\item Authenticate data;\pause
-\end{itemize}
-\item Usually are a claim of designers that must be verified.
+\item The goal of the protocol is to establish mutual authentication between two parties A and B in the presence of adversary;\pause
+\item  A and B obtain a secret shared key though authentication server S;\pause
+\item The adversary can intercept messages, delay messages, read and copy messages and generate messages;\pause
+\item The adversary can not learn the secret keys of principals, which they share with the authentication server S.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Building Blocks}
+\begin{frame}{Assumptions of NSSKP}
 \begin{itemize}
-\item Symmetric cryptography;\pause
-\item Cryptographic hashes;\pause
-\item Asymmetric cryptography;\pause
-\item Advanced primitives;\pause
-\item Other security protocols;
+\item There are three principals, two named A and B, desiring mutual authentication, and
+S, a trusted key server;\pause
+\item It is assumed that A and B already have secure symmetric communication with
+S using keys $K_{AS}$ and $K_{BS}$ , respectively;\pause
+\item It is assumed that the attacker can not be a legitimate party within the protocol.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Standard Security Properties}
+\begin{frame}{Freshness Concepts of NSSKP}
 \begin{itemize}
-\item Confidentiality;\pause
-\item Integrity;\pause
-\item Timeliness;\pause
-\item Authentication.
+\item NSSKP uses nonces which are randomly generated values included in messages and used only once;\pause
+\item If a nonce is generated and sent by one agent in one step and returned by another in a later step, the generator knows that the message is fresh and not a replay from an earlier exchange;\pause
+\item Note that a nonce is not anchored in time. The only assumption is that it has not been used in any earlier interchange, with high probability because it is random and not used twice.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Advanced Security Properties}
+\begin{frame}{How NSSKP works}
 \begin{itemize}
-\item Forward secrecy;\pause
-\item Non-repudiation;\pause
-\item Availability;\pause
-\item Anonymity rather than Authenticity;\pause
-\item Plausible Deniability rather than Non-Repudiation;\pause
-\item Transparency instead of Privacy; \pause
-\item Etc...
+\item A makes contact with the authentication server S, sending identities A and B and nonce NA;\pause
+\item S responds with a message encrypted with the key of A. The message contains session key KAB (to be used by A and B) and certificate encrypted with B’s key conveying the session key and A’s identity;\pause
+\item A sends the certificate to B;\pause
+\item B decrypts the certificates and sends his own nonce encrypted by the session key to A; (nonce handshake);\pause
+\item A decrypts the last message and sends modified nonce back to B.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Confidentiality}
-\begin{itemize}
-\item Also called secrecy;\pause
-\item Is the usual main goal of cryptography;\pause
-\item Can be provided using symmetric cryptography or asymmetric cryptography;\pause
-\item Symmetric cryptography is not ``clean cut" since it always provide some sort of authentication; \pause
-\item Asymmetric cryptography separate confidentiality from authentication.
-\end{itemize}
+\begin{frame}{How NSSKP works}
+\begin{block}{Goal}
+By the end of the message exchange both A and B share the secret key and both are assured in the presence of each other. 
+\end{block}
 \end{frame}
 
-\begin{frame}{Confidentiality Examples}
+\begin{frame}{How to Understand Security Protocols}
 \begin{itemize}
-\item A sends to B message M encrypted with shared key Kab;\pause
-\item A sends to B message M encrypted with B's public key.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Integrity}
+\item There are questions to ask for any step in any protocol or ceremony:\pause
 \begin{itemize}
-\item Is the main property provided by hash functions and message authentication codes;\pause
-\item Hash function provide ``clean cut'' integrity checking;\pause
-\item MACs provide integrity coupled with authentication;\pause
-\item Integrity provided by theses cryptographic primitives are intended to detect active modification of messages;\pause
-\item Integrity functions can also be used to avoid homomorphic manipulation;\pause
-\item Can be used to avoid reverting operations within protocols;\pause
-\item On itself is a weak property.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Integrity Examples}
-\begin{itemize}
-\item A sends to B the hash of message M;\pause
-\item A sends to B the authentication code of message M with Key Kab.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Timeliness}
-\begin{itemize}
-\item Anchor the messages to the correct timing;\pause
-\item Can be provided by nonces (number used only once);\pause
-\item Can be provided by Timestamps;\pause
-\item Timestamps are usually coupled with time to live requirements;\pause
-\item Allows for peers to check the ordering of messages;\pause
-\item Allows for peers to check the liveness of other peers.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Timeliness Examples}
-\begin{itemize}
-\item A sends to B the nounce Na and recieves back Nb,Na ;\pause
-\item A sends to B the timestamp of the generation time of the messages.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Authentication}
-\begin{itemize}
-\item Is a basic but usually composed property;\pause
-\item Comes in different shapes depending on the basic building blocks used;\pause
-\item Aliveness - A runs the protocol with B;\pause
-\item Weak Agreement - A runs the protocol with B but B does not authenticate A;\pause
-\item Non-Injective Agreement - Key exchange;\pause
-\item Mutual Agreement - A runs the protocol with B but B does authenticate A.
-\end{itemize}
-\end{frame}
-
-\begin{frame}{Two facets of authentication}
-\begin{itemize}
-\item Authentication can serve both for assigning responsibility and for giving credit;\pause
-\item An ``authenticated'' message M from a principal A to a principal B may be used in at least two distinct ways:\pause
-\begin{itemize}
-\item B may believe that the message M is being supported by A’s authority;\pause
-\item B may attribute credit for the message M to A.\pause
+\item What is the sender trying to say with this message?\pause
+\item What is the receiver entitled to believe after receiving the message?\pause
+\item Can I use less resources to achieve the same goals?\pause
+\item Isn't there anything that I did not catch?
 \end{itemize}
 \end{itemize}
 \end{frame}
 
+\begin{frame}{Notation For Protocol Description}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+$A, B$ and $S$ & Agent names (Alice, Bob and Steve) \\\pause
+$N_A$ & Random number chosen by Alice (Nonce)\\\pause
+$K_{AS}$ & Long term key shared between Alice and Steve\\\pause
+$\{X\}_{K_{AS}}$ & Encrypted message using $K_{AS}$\\
+\end{tabular}
+\end{center}
+\label{default}
+\end{table}%
+\end{frame}
 
-\begin{frame}{Two facets of authentication}
+\begin{frame}{NSSKP Message Exchange}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{NSSKP - What is being said!}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+& {\color{red}Hi Steve, this is Alice, I want to talk to Bob, }\\
+& {\color{red}that's the identifier of my request.}\\\pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+& {\color{red}Alice I am sending you a secret which shows}\\ 
+& {\color{red}your identifier, Bob's identity and the key }\\
+& {\color{red}for you to talk to him. Here is a ticket to send}\\
+& {\color{red}Bob the key and relate it to your identity.}\\\pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+& {\color{red}Bob there is a ticket for you!}\\ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+
+\begin{frame}{NSSKP - What is being said!}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+& {\color{red}I want to challenge Alice to see if she }\\ 
+& {\color{red}has the key on the ticket.}\\ \pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\\pause
+& {\color{red}Challenge accepted. Take it back!}\\ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{NSSKP Knowledge Exchange}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+& {\color{olive}Alice Knows $N_A$ and $K_{AS}$}\\ \pause
+1. & A $\rightarrow$ S:  $ A , B, N_{A}$ \\\pause
+& {\color{olive}Steve Knows $N_A$, $K_{AB}$, $K_{BS}$ and $K_{AS}$}\\ \pause
+2. & S $\rightarrow$ A:  $\{N_{A}, B, K_{AB}, \{K_{AB}, A\}_{K_{BS}}\}_{K_{AS}}$ \\\pause
+& {\color{olive}Alice Knows $N_A$, $K_{AS}$ and $K_{AB}$}\\ \pause
+3. & A $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+& {\color{olive}Bob Knows $N_B$, $K_{BS}$ and $K_{AB}$}\\ \pause
+4. & B $\rightarrow$ A:  $\{ N_B \}_{K_{AB}}$ \\\pause
+& {\color{olive}Alice Knows $N_A$, $N_B$, $K_{AS}$ and $K_{AB}$}\\ \pause
+5. & A $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Informal Verification of Security Protocols}
 \begin{itemize}
-\item Some protocols are adequate for assigning responsibility but not for giving credit, and vice versa;\pause
-\item The two facets of authentication are most clearly separate in protocols
-that rely on asymmetric cryptosystems;\pause
-\item Even when it is proved beyond a reasonable doubt that a principal sent a message, responsibility and credit may not follow.
+\item What to ask about a protocol or ceremony:\pause
+\begin{itemize}
+\item Are both authentication and secrecy assured?\pause
+\item Is it possible to impersonate one or more of the parties?\pause
+\item Is it possible to interject messages from an earlier exchange (replay attack)?\pause
+\item What tools can an attacker deploy?\pause
+\item If any key is compromised, what are the consequences?
+\end{itemize}
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Views on responsibility and credit}
+\begin{frame}{Denning and Sacco Attack}
 \begin{itemize}
-\item An authentication protocol should at least establish responsibility;\pause
-\item There does not seem to be a consensus that an authentication protocol should also
-establish credit;\pause
-\item Once a protocol has set up a channel that speaks for a principal, it is easy to use the channel for establishing credit whenever the need arises;\pause
-\item Establishing credit is a matter of prudence.
+\item Denning and Sacco pointed out that the compromise of a session key has bad consequences. An intruder can reuse an old session key and pass it off as a new one;\pause
+\item Suppose Charlie has acquired $K_{AB}$ from a past run of the protocol, and start the protocol from message 3;\pause
+\end{itemize}
+\begin{block}{Bob will believe he is talking to Alice}\pause
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+3. & C $\rightarrow$ B:  $\{K_{AB}, A\}_{K_{BS}}$ \\\pause
+4. & B $\rightarrow$ C:  $\{ N_B \}_{K_{AB}}$ \\\pause
+5. & C $\rightarrow$ B:  $\{ N_B - 1 \}_{K_{AB}}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+\end{block}
+\end{frame}
+
+\begin{frame}{Denning and Sacco Attack}
+\begin{itemize}
+\item Message 3 is not protected by any freshness component;\pause
+\item There is no way for B to know if the $K_{AB}$ it receives is current;\pause
+\item Lack of freshness on message 3 means an intruder has unlimited time to crack an old session key and reuse it.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Analysis of Authentication}
+\begin{frame}{Bauer, et al. Attack on NSSKP}
 \begin{itemize}
-\item Honest protocol participants are expected to follow the rules of the protocol faithfully,and not to try to obtain credit for messages that they did not generate
-themselves. A proof about honest protocol participants may show that a protocol
-establishes responsibility, but not credit;\pause
-\item When an attacker is included as protocol participant, the attacker is not forced
-to follow the rules of the protocol, and may attempt to get undue credit. A proof
-that concerns such an attacker can show that a protocol establishes credit.
+\item Bauer, et al. pointed out that if key $K_{AS}$ were compromised, anyone could impersonate A and establish communication with any other party;\pause
+\item Usually the lost of control on long term secrets affects deeply how a protocol operate;\pause
+\item It is important to have mechanisms that could revoke keys or at least render them unusable after sometime.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Discussion}
+\begin{frame}{Questions!}
 \begin{itemize}
-\item Can give examples of security protocols that have these properties we shown above?\pause
-\item Can you give examples of problems/attacks on security protocols that have these properties we shown above?\pause
-\item How can we avoid problems/attacks on security protocols?
+\item These flaws persisted for almost 10 years before they were discovered. Why did it take that long to see that?\pause
+\item Ask what happens if a key is broken is a fair question?\pause
+\item How can you address these design faults pointed out by Denning and Sacco and Bauer et al.?
+\end{itemize}
+\end{frame}
+
+\frame{
+	\frametitle{Needham-Schroeder Public Key Protocol}
+\begin{itemize}
+\item Many existing protocols are derived from the work of Needham and Schroeder (1978);\pause 
+\item The handshake done by many public key cryptographic protocols are derived from NSPKP;\pause
+\item NSPKP is a public-key authentication protocol designed to generate and propagate a session key which is used for subsequent symmetrically encrypted communication;\pause
+\item There is no public key infrastructure in place, but the identities related to public keys are an assumption.
+\end{itemize}
+}
+
+\frame{\frametitle{Needham-Schroeder Public Key Protocol}
+
+		\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & A $\rightarrow$ B:  $\{| N_a , A |\}_{K_b}$ \\ \pause
+2. & B $\rightarrow$ A:  $\{| N_a , N_b |\}_{K_a}$ \\ \pause
+3. & A $\rightarrow$ B:  $\{| N_b |\}_{K_b}$ \\
+\end{tabular}
+\end{center}
+\end{table}%
+}
+
+\begin{frame}{NSPKP Goals}
+\begin{itemize}
+\item The goal of the protocol is to establish mutual authentication between two parties A and B in the presence of adversary;\pause
+\item A and B obtain a secret shared key though direct communication using public key cryptography;\pause
+\item This adversary can intercept messages, delay messages, read and copy messages and generate messages;\pause
+\item This adversary can not learn the privates keys of principals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Freshness Concepts of NSPKP}
+\begin{itemize}
+\item NSPKP uses nonces which are randomly generated values included in messages and used only once;\pause
+\item If a nonce is generated and sent by one agent in one step and returned by another in a later step, the generator knows that the message is fresh and not a replay from an earlier exchange;\pause
+\item Note that a nonce is not anchored in time. The only assumption is that it has not been used in any earlier interchange, with high probability because it is random and not used twice.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Needham-Schroeder Public Key Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
 \end{itemize}
 \end{frame}
 
