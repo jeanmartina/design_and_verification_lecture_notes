@@ -10,12 +10,12 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \author{Design and Verification of Security Protocols and Security Ceremonies}
-\title{\vspace{-.2cm}Advanced Security Properties and Properties Composition}
+\title{\vspace{-.2cm}Classical Protocols}
 %\setbeamercovered{transparent} 
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{-1cm}August-November 2016} 
+\date{\vspace{.2cm}March-June 2018} 
 \subject{} 
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
 height=\paperheight]{../reusable_images/fundo_UFSC.png}}
@@ -30,153 +30,282 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{frame}
 }
 
-\begin{frame}{Disclaimer}
-\begin{block}{Disclaimer!}
-What we will see in the next slides is not a precise scientific description of the properties, but a basis for exemplification of what is out there just to foster discussion.
-\end{block}\pause
+\begin{frame}{Protocols to See Today!}
 \begin{itemize}
-\item We will be seeing common security properties that happen on literature;\pause
-\item The descriptions are solely the lecturer's opinion on the properties and may be wrong.
+\item Otway-Rees;\pause
+\item Woo–Lam;\pause
+\item Neuman–Stubblebine;\pause
+\item Wide-Mouth Frog protocol;\pause
+\item Yahalom.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{List of Advanced Security Properties}
+\begin{frame}{Otway-Rees Protocol}
 \begin{itemize}
-\item Forward secrecy;\pause
-\item Non-repudiation;\pause
-\item Plausible Deniability;\pause
-\item Availability;\pause
-\item Eligibility;\pause
-\item Fairness;\pause
-\item Receipt-freeness;\pause
-\item Coercion-resistance;\pause
-\item Privacy; \pause
-\item Anonymity;\pause
-\item Transparency.
+\item By Dave Otway and Owen Rees in 1987;\pause
+\item A protocol for efficient mutual authentication (via a mutually trusted third party);\pause 
+\item It assures both principal parties of the timeliness of the interaction without the use of clocks or double encipherment. 
 \end{itemize}
 \end{frame}
 
 
-\begin{frame}{Forward Secrecy}
+\begin{frame}{Otway-Rees Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B:M,A,B,\{N_{A},M,A,B\}_{K_{AS}}$ \\\pause
+2. & $B\rightarrow S:M,A,B,\{N_{A},M,A,B\}_{{K_{{AS}}}},\{N_{B},M,A,B\}_{{K_{{BS}}}}$ \\\pause
+3. & $S\rightarrow B:M,\{N_{A},K_{{AB}}\}_{{K_{{AS}}}},\{N_{B},K_{{AB}}\}_{{K_{{BS}}}}$ \\\pause
+4. & $B\rightarrow A:M,\{N_{A},K_{{AB}}\}_{{K_{{AS}}}}$ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Otway-Rees Protocol - Questions}
 \begin{itemize}
-\item Forward secrecy relates to the non-interference of short term keys leakage to new short term keys;\pause
-\item It does not relate to long term keys;\pause
-\item Is usually obtained by the negotiation of short term keys only based on long term keys;\pause
-\item Has a complementary property that is Backwards secrecy;\pause
-\item Having both lead to full non-interference among session keys.
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Non-repudiation}
+\begin{frame}{Two Attacks on Otway-Rees Protocol}
 \begin{itemize}
-\item Is the inability to deny knowledge of a message;\pause
-\item Happens as non-repudiation of origin, meaning authorship;\pause
-\item Happens as non-repudiation of destiny, meaning confirmation of reception;\pause
-\item Is usually implemented using asymmetric crypto in digital signature mode;\pause
-\item Can also be achieve by the use of commitments.
+\item A malicious intruder can arrange for A and B to end up with
+different keys:\pause
+\begin{enumerate}
+\item After step 3, B has received $K_{AB}$;\pause
+\item An intruder then intercepts the fourth message;\pause
+\item The intruder resends message 2, so S generates a new key $K'_{AB}$, sent to B;\pause
+\item The intruder intercepts this message too, but sends to A the message $M,\{N_a,K_{AB}\}_{K_{AS}}$;\pause
+\item A has $K'_{AB}$, while B has $K_{AB}$. \pause
+\end{enumerate}
+\item Another problem: although the server tells B that A used a nonce, B doesn’t know if this was a replay of an old message.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Plausible Deniability}
+\begin{frame}{Woo–Lam Protocol}
 \begin{itemize}
-\item Is the ability to deny knowledge of a message;\pause
-\item Act the the courter property of Non-Repudiation;\pause
-\item Is implemented shared secret crypto;\pause
-\item Can also happen on origin, destination or both.
+\item Woo–Lam refers to various computer network authentication protocols designed by Simon S. Lam and Thomas Woo;\pause
+\item The most common is the one published in 1992;\pause
+\item The protocols enable two communicating parties to authenticate each other and to exchange session keys;\pause
+\item It involves the use of a trusted key distribution center (KDC) to negotiate between the parties;\pause
+\item Both symmetric-key and public-key variants have been described.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Availability}
+\begin{frame}{Woo–Lam Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B: A$ \\\pause
+2. & $B\rightarrow A: NB$ \\\pause
+3. & $A\rightarrow B: \{NB\}_{K_{AS}} $ \\\pause
+4. & $B\rightarrow S: \{A,\{NB\}_{K_{AS}}\}_{K_{BS}}$ \\\pause
+5. & $S\rightarrow B: \{NB\}_{K_{BS}}$
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Woo–Lam Protocol - Questions}
 \begin{itemize}
-\item Is the property that relates to presence of knowledge whenever needed;\pause
-\item Is difficult to reach by crypto-means;\pause
-\item Is usually reached using replication;\pause
-\item There are some interesting primitives that achieve availability such as secret-sharing.
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Eligibility}
+\begin{frame}{Attack on Woo–Lam Protocol}
 \begin{itemize}
-\item Is the property that states authority to a peer to act;\pause
-\item Usually present on election protocols;\pause
-\item Is related and derived from Authentication;\pause
-\item Can also happen through delegation;\pause
-\item Is implemented in this later case by the usage of tickets;\pause
-\item Can also control the number of times the peer is allowed to do something.
+\item Two simultaneous inbound authentication attempts initiated by an attacker C,
+where C is also considered as any other regular participant; \pause
+\item C pretends to be A in one and retains its own identity C for the other; \pause
+\item C obtains nonces from B for both runs and encrypts the nonce NB intended for A with its own server key and returns it to B, retaining its original identity; \pause
+\item When the nonce is returned by the server, it leads B to believe that it has authenticated A, whereas A has not even participated in either of the runs. 
+\item The attack is complete. 
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Fairness}
+\begin{frame}{Neuman–Stubblebine Protocol}
 \begin{itemize}
-\item Fairness is the properties that guarantees that no information is acquired out of the right time;\pause 
-\item In election protocols it means that no early results can be obtained which could influence the remaining voters;\pause
-\item Is usually implemented with encryption (either symmetric or asymmetric);\pause
-\item The keys are them distributed is such a way that only an agreement can enable decryption.
+\item Created by Neuman and Stubblebine in 1993;\pause
+\item It allows individuals communicating over such a network to prove their identity to each other;\pause
+\item This protocol utilizes time stamps, but does not depend on synchronized clocks;\pause
+\item It has an Establishment phase and a Communication phase.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Receipt-freeness}
+\begin{frame}{Neuman–Stubblebine Protocol - Establishment}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B: A, N_{A}$ \\\pause
+2. & $B\rightarrow S: B,N_{B},\{A,N_{A},T_{B}\}_{K_{BS}}$ \\\pause
+3. & $S\rightarrow A:\{B,N_{A},K_{AB},T_{B}\}_{K_{AS}},\{A,K_{AB},T_{B}\}_{K_{BS}},N_{B}$ \\\pause
+4. & $A\rightarrow B:\{A,K_{AB},T_{B}\}_{K_{BS}},\{N_{B}\}_{K_{AB}}$
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Neuman–Stubblebine Protocol - Communication}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B: \{A,K_{AB},T_{B}\}_{K_{BS}},N'_{A}$ \\\pause
+2. & $B\rightarrow A: N'_{B},\{N'_{A}\}_{K_{AB}}$ \\\pause
+3. & $A\rightarrow B: \{N'_{B}\}_{K_{AB}}$ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+
+\begin{frame}{Neuman–Stubblebine Protocol - Questions}
 \begin{itemize}
-\item Receipt-freeness is the property that the peer does not carry any proof of acts within the protocol;\pause
-\item In election protocols it means that a voter does not gain any information (a receipt) which can be used to prove to a coercer that she voted in a certain way;\pause
-\item It is tricky to achieve when combined with other properties;\pause
-\item Implementation usually is not done using cryptographic means.
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Coercion-resistance}
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
 \begin{itemize}
-\item Coercion-resistance is the property that avoid a peer to act in certain way against its own will and forced by an external entity;\pause
-\item In election protocols it means that a voter cannot cooperate with a coercer to prove to him that she voted in a certain way;\pause
-\item It is usually achieve by using the last commitment within the protocol;\pause
-\item Implementation usually depends of Receipt-freeness but is not a requirement.
+\item Weidenbach Attack:
+\item The server can be used by the attacker to generate an arbitrary number of messages $\{A,K_{AB},T_{B}\}_{K_{BS}}$. As the attacker knows that the only thing that changes is the key $K_{AB}$ he can make the Server to generate material for known-plain text attacks;
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Verifiability}
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
 \begin{itemize}
-\item Is the property that allows for peers to be assured that their interaction was perceived within the protocol;\pause
-\item Is usually implemented using bulletin boards;\pause
-\item In election protocols it can be specialised in:\pause
-\begin{itemize}
-\item Individual verifiability: a voter can verify that her vote was really counted;\pause
-\item Universal verifiability: the published outcome really is the sum of all the votes.
-\end{itemize}
+\item Paradox Attack:
+\item While B sends message (2) to S, C intercepts the ciphertext {A, N x, Tb}Kbs and the nonce N b generated by B . C ignores the message (3) (bypasses Step (2) and Step (3)) and sends {A, N x, To}Kbs together with {Nb}N x as the message (4) to B. Because both
+{A, Nx, Tb}Kbs and {A, Kab, Tb}Kbs have the same format  B cannot distinguish one from the other;
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Privacy}
+
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
 \begin{itemize}
-\item Privacy is the property that allows for peers to choose the amount of data that is being release to other peers;\pause
-\item Has a controversial definition since it is related to a personal feeling;\pause
-\item It is intrinsically related to Confidentiality;\pause
-\item In election protocols it means that the system cannot reveal how a particular voter voted;\pause
+\item Oracle Attack:
+\item C first intercepts the ticket in Establishment. Although C cannot decrypt, C may send the intercepted ticket and a forged nonce, $N'_{C}$, to B;\pause
+\item Upon receiving the message, B verifies the ticket. If it is valid, B responds $\{N'_{C}\}_{K_{AB}}$ and a new nonce, $N'_{B}$, to A;\pause
+\item Once C intercepts this message, he uses B as an oracle and starts a new session with
+B;
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Anonymity}
+\begin{frame}{Attacks on Neuman–Stubblebine Protocol}
 \begin{itemize}
-\item Anonymity is the property that does not allow identification of peers;\pause
-\item Is usually achieve by using obfuscation techniques;\pause
-\item Usually is implemented with hashes or MACs;\pause
-\item Is a form of plausible deniability.
+\item C sends the nonce $N'_{B}$, he just received coupled the same ticket to B. Upon receiving the message, B sends back $\{N'_{C}\}_{K_{AB}}$ and a new nonce, $N''_{B}$, to A;\pause
+\item X can intercept it and get the encrypted nonce $\{N'_{B}\}_{K_{AB}}$;\pause
+\item Finally, C successfully passes the first authentication session of B by sending the $\{N'_{B}\}_{K_{AB}}$ back to B.
 \end{itemize}
 \end{frame}
 
-\begin{frame}{Transparency}
+\begin{frame}{Wide-Mouth Frog protocol Protocol}
 \begin{itemize}
-\item Transparency can be defined the distance of a message from ground truth;\pause
-\item It a very new property that is actually being studied still;\pause
-\item Is present in crypto-currency protocols and in health related systems;\pause
-\item Is a dichotomy of Privacy.
+\item The protocol was first described under the name "The Wide-mouthed-frog Protocol" in the paper "A Logic of Authentication" (1990), which introduced BAN Logic;\pause
+\item The paper gives no rationale for the protocol's whimsical name;\pause
+\item It allows individuals communicating over a network to prove their identity to each other while also preventing eavesdropping or replay attacks, and provides for detection of modification and the prevention of unauthorized reading.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Wide-Mouth Frog protocol Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow S:A,\{T_{A},B,K_{{AB}}\}_{{K_{{AS}}}}$ \\\pause
+2. & $S\rightarrow B:\{T_{S},A,K_{{AB}}\}_{{K_{{BS}}}}$ \\\pause
+\end{tabular}
+\end{center}
+\end{table}%
+To prevent active attacks, some form of authenticated encryption (or message authentication) must be used.
+\end{frame}
+
+
+\begin{frame}{Wide-Mouth Frog protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Problems on Wide-Mouth Frog protocol}
+\begin{itemize}
+\item A global clock is required;\pause
+\item The server S has access to all keys;\pause
+\item The value of the session key $K_{AB}$ is completely determined by A, who must be competent enough to generate good keys;\pause
+\item It can replay messages within the period when the timestamp is valid. A is not assured that B exists;\pause
+\item The protocol is stateful. This is usually undesired because it requires more functionality and capability from the server. For example, S must be able to deal with situations in which B is unavailable.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attack on Wide-Mouth Frog protocol}
+\begin{itemize}
+\item The value of the session key $K_{AB}$ is completely determined by an untrusted peer in the protocol;\pause
+\item A Man-in-the-middle attack is trivial;\pause
+\item C can deliberately reuse keys to defeat the protocols goals.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Yahalom Protocol}
+\begin{itemize}
+\item Unpublished protocol. It appears on BAN Logic paper as personal communication by the authors with Yahalom;\pause
+\item Yahalom uses a trusted arbitrator to distribute a shared key between two people;\pause
+\item This protocol can be considered as an improved version of Wide Mouth Frog protocol.
+\end{itemize}
+\end{frame}
+
+
+\begin{frame}{Yahalom Protocol}
+\begin{table}[htdp]
+\begin{center}
+\begin{tabular}{ l l }
+1. & $A\rightarrow B:A,N_{A}$ \\\pause
+2. & $B\rightarrow S:B,\{A,N_{A},N_{B}\}_{K_{BS}}$ \\\pause
+3. & $S\rightarrow A:\{B,K_{{AB}},N_{A},N_{B}\}_{{K_{{AS}}}},\{A,K_{{AB}}\}_{{K_{{BS}}}}$ \\\pause
+4. & $A\rightarrow B:\{A,K_{{AB}}\}_{{K_{{BS}}}},\{N_{B}\}_{{K_{{AB}}}}$ 
+\end{tabular}
+\end{center}
+\end{table}%
+\end{frame}
+
+\begin{frame}{Yahalom Protocol - Questions}
+\begin{itemize}
+\item What are the assumptions? \pause
+\item What seems to be the goal?\pause 
+\item What might the principals believe after each step?\pause
+\item What is missing?\pause
+\item Is it secure?
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attacks on Yahalom Protocol}
+\begin{itemize}
+\item Bob completed his protocol execution believing he was communicating with Alice, but it actually was not so;\pause
+\item Because the first encrypted chunk in the fourth message does not include the terms used for proving the freshness of the session key, such as NB, the encrypted chunk
+could be a replayed message. 
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Discussion}
 \begin{itemize}
-\item Which other properties did you hear about?\pause
-\item Which are the dichotomies you can see between the properties shown today?\pause
-\item Can you foresee an online activity that you require a property not listed here?
+\item What the classical protocols tell us in terms of designs?\pause
+\item What the classical protocols tell us in terms of flaws?\pause
+\item How most of these flaws were discovered?
 \end{itemize}
 \end{frame}
 
