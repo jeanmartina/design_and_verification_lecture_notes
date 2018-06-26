@@ -164,19 +164,19 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
     \end{columns}
   }
 
-%\frame{
-%	\frametitle{Introduction}
-%	\framesubtitle{Motivation}
-%    \begin{itemize}    
-%    \item Dolev-Yao threat model represents the most powerful attacker possible
-%    
-%    \item However, this powerful attacker is not realistic in certain scenarios
-%    
-%    \item Workarounds to protect agains unrealistic attacks may introduce security problems
-%    
-%    \item Despite the fact that the security flaws are introduced during the implementation of the procotol, its cause is often an inaccurate assumption which may have been forced by an unrealistic threat model
-%    \end{itemize}
-%  }
+\frame{
+	\frametitle{Introduction}
+	\framesubtitle{Motivation}
+    \begin{itemize}    
+    \item Dolev-Yao threat model represents the most powerful attacker possible;\pause
+    
+    \item However, this powerful attacker is not realistic in certain scenarios;\pause
+    
+    \item Workarounds to protect agains unrealistic attacks may introduce security problems;\pause
+    
+    \item Despite the fact that the security flaws are introduced during the implementation of the procotol, its cause is often an inaccurate assumption which may have been forced by an unrealistic threat model
+    \end{itemize}
+  }
 
 %=============%
 % New Section %
@@ -193,33 +193,33 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
 \end{figure}
 }
 
-%\frame{
-%	\frametitle{Ceremonies}
-%    \begin{itemize}
-%    \item Security protocols are sequence of interactions among entities designed to achieve a certain end.
-%    
-%    \begin{itemize}
-%        \item Goals are (not limited to):
-%        \begin{itemize}
-%            \item Authentication, Key distribution, Secrecy, Anonymity, etc
-%        \end{itemize}
-%    \end{itemize}
-%    
-%    \item Ceremonies include in addition to protocols:
-%    
-%    \begin{itemize}
-%        \item new node types (humans, user interfaces, etc)
-%        
-%        \item new communication channels (human-device, human-human)
-%        
-%        \item additional operations which were previously out-of-bounds (user interaction, pre-key distribution)
-%    \end{itemize}
-%    \item In a protocol specification, we define assumptions to represent out-of-bound operations. 
-%    
-%    \item In ceremonies we break down these assumptions into smaller and well described assumptions
-%    
-%    \end{itemize}
-%  }
+\frame{
+	\frametitle{Ceremonies}
+   \begin{itemize}
+   \item Security protocols are sequence of interactions among entities designed to achieve a certain end;\pause
+   
+   \begin{itemize}
+       \item Goals are (not limited to):\pause
+       \begin{itemize}
+           \item Authentication, Key distribution, Secrecy, Anonymity, etc\pause
+       \end{itemize}
+   \end{itemize}
+   
+   \item Ceremonies include in addition to protocols:\pause
+   
+   \begin{itemize}
+       \item new node types (humans, user interfaces, etc);\pause
+       
+       \item new communication channels (human-device, human-human);\pause
+       
+       \item additional operations which were previously out-of-bounds (user interaction, pre-key distribution).\pause
+   \end{itemize}
+   \item In a protocol specification, we define assumptions to represent out-of-bound operations;\pause
+   
+   \item In ceremonies we break down these assumptions into smaller and well described assumptions.
+   
+   \end{itemize}
+ }
 
 \frame{
 	\frametitle{Security Ceremonies}
@@ -229,10 +229,10 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
     \item<+-> A ceremony allows more detailed analysis of a protocol
     \item<+-> Assumptions are more precise and well described
     \item<+-> A Dolev-Yao attacker for ceremonies is not always consistent with real world threats
-%        \begin{itemize}
-%      	\item An attacker capable of modifying (or replaying) a ``speech'' packet in a human-human medium is unrealistic if this communication happens in person
-%    \end{itemize}
-%    
+       \begin{itemize}
+     	\item An attacker capable of modifying (or replaying) a ``speech'' packet in a human-human medium is unrealistic if this communication happens in person
+   \end{itemize}
+   
     \item<+-> The description attacker capabilities for ceremonies scope requires finer granularity in its description       
     \end{itemize}
     \end{column}
@@ -244,19 +244,19 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
   
   
 
-%\frame{
-%	\frametitle{Ceremony Verification}
-%	\framesubtitle{Justification}
-%    \begin{itemize}
-%    \item A more human-centric security view.
-%    
-%    \item Designing more realistic ceremonies.
-%    
-%    \item Assist the human peer to assess the threat level he is subject to.
-%    
-%    \item By not overstating assumptions we inherently make them plausible and achievable.
-%    \end{itemize}
-%  }
+\frame{
+	\frametitle{Ceremony Verification}
+	\framesubtitle{Justification}
+   \begin{itemize}
+   \item A more human-centric security view;\pause
+   
+   \item Designing more realistic ceremonies;\pause
+   
+   \item Assist the human peer to assess the threat level he is subject to;\pause
+   
+   \item By not overstating assumptions we inherently make them plausible and achievable.
+   \end{itemize}
+ }
 
 
 
@@ -367,19 +367,19 @@ height=\paperheight]{../reusable_images/fundo_capa.png}}
     \end{itemize}
 
 }    
-%\frame{
-%	\frametitle{Proposed Threat Model}
-%	\framesubtitle{Notation}
-%    \begin{itemize}
-%    	\item ``DY'' is a Dolev-Yao attacker
-%	
-%	\item ``DY-BR'' means a Dolev-Yao attacker without the blocking and replaying capabilities. 
-%	
-%	\item All the logical connectives have their usual meaning.
-%	
-%	\item The set knows(X), represents the set of knowledge of an agent X in the protocol.
-%    \end{itemize}
-%}    
+\frame{
+	\frametitle{Proposed Threat Model}
+	\framesubtitle{Notation}
+   \begin{itemize}
+   	\item ``DY'' is a Dolev-Yao attacker
+	
+	\item ``DY-BR'' means a Dolev-Yao attacker without the blocking and replaying capabilities. 
+	
+	\item All the logical connectives have their usual meaning.
+	
+	\item The set knows(X), represents the set of knowledge of an agent X in the protocol.
+   \end{itemize}
+}    
 
 \frame{
 	\frametitle{Proposed Threat Model}

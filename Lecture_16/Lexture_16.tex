@@ -16,7 +16,7 @@
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{-1cm}August-November 2016} 
+\date{\vspace{-1cm}March-June 2018} 
 \subject{} 
 
 \newtheorem{mydef}{Definition}
@@ -249,6 +249,21 @@ This topic will be divided into two lectures. One will deal with automatic theor
 \end{mydef}\pause
 \begin{itemize}
 \item The symmetric key set is defined as containing all keys where the inverse of the key by the application of the function \textit{invKey} is itself;\pause
+\end{itemize}
+}
+
+
+\frame{
+\frametitle{Inductive Method Details - Cryptographic Keys}
+\begin{mydef}{symKeys set definition}\label{mydef:symKeys}
+ \begin{isabelle}%
+ \isacommand{constdefs}\isamarkupfalse%
+\isanewline
+\ \  symKeys :: "key set"\isanewline
+\ \  "symKeys == {K. invKey K = K}"
+ \end{isabelle}%
+\end{mydef}
+\begin{itemize}
 \item  By stating \textit{K $\in$ symKeys $\wedge$ K $\notin$ range shrK} we can create a second class of symmetric keys that are not long-term so that it represents sessions keys in our protocols being verified.
 \end{itemize}
 }
@@ -399,7 +414,6 @@ privateKey\_neq\_publicKey [iff]: \isanewline \ \ "privateKey b A $\neq$ publicK
  \begin{isabelle}%
  \isacommand{consts}
  \isamarkupfalse
-\isanewline
 \ \ knows  :: "agent => event list => msg set"\isanewline
 \isanewline
  \isacommand{primrec}
