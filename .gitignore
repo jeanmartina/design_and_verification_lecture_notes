@@ -5,3 +5,6 @@
 *.log
 *.snm
 *.backup
+*.xml
+*.def
+*.bcf
