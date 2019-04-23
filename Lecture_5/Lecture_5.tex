@@ -15,7 +15,7 @@
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{.2cm}March-June 2018} 
+\date{\vspace{.2cm}March-June 2019} 
 \subject{} 
 \usebackgroundtemplate{\includegraphics[width=\paperwidth,
 height=\paperheight]{../reusable_images/fundo_UFSC.png}}
@@ -197,14 +197,14 @@ where C is also considered as any other regular participant; \pause
 \item Oracle Attack:
 \item C first intercepts the ticket in Establishment. Although C cannot decrypt, C may send the intercepted ticket and a forged nonce, $N'_{C}$, to B;\pause
 \item Upon receiving the message, B verifies the ticket. If it is valid, B responds $\{N'_{C}\}_{K_{AB}}$ and a new nonce, $N'_{B}$, to A;\pause
-\item Once C intercepts this message, he uses B as an oracle and starts a new session with
+\item Once C intercepts this message, he uses B as an oracle and starts a new session with A.
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Attacks on Neuman–Stubblebine Protocol}
 \begin{itemize}
 \item C sends the nonce $N'_{B}$, he just received coupled the same ticket to B. Upon receiving the message, B sends back $\{N'_{C}\}_{K_{AB}}$ and a new nonce, $N''_{B}$, to A;\pause
-\item X can intercept it and get the encrypted nonce $\{N'_{B}\}_{K_{AB}}$;\pause
+\item C can intercept it and get the encrypted nonce $\{N'_{B}\}_{K_{AB}}$;\pause
 \item Finally, C successfully passes the first authentication session of B by sending the $\{N'_{B}\}_{K_{AB}}$ back to B.
 \end{itemize}
 \end{frame}
