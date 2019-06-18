@@ -16,7 +16,7 @@
 \setbeamertemplate{navigation symbols}{} 
 %\logo{\includegraphics[scale=0.015]{Brasao_UFSC.png}\includegraphics[scale=0.2]{brasao_PPGCC.jpg}} 
 \institute{Programa de Pós-Graduacão em Ciências da Computacão \\ Dr. Jean Everson Martina} 
-\date{\vspace{-1cm}March-June 2018} 
+\date{\vspace{-1cm}March-June 2019} 
 \subject{} 
 
 \newtheorem{mydef}{Definition}
@@ -130,7 +130,7 @@ This topic will be divided into two lectures. One will deal with automatic theor
 \item Correctness theorem about the traces;\pause
 \end{itemize}
 \item We then add the attacker inference rules;\pause
-\item We state the goals ad theorems and lemmas;\pause
+\item We state the goals, theorems and lemmas;\pause
 \item We prove the theorems inductively to demonstrate correctness.
 \end{itemize}
 }
@@ -220,7 +220,6 @@ This topic will be divided into two lectures. One will deal with automatic theor
 \begin{mydef}{invKey function definition}\label{mydef:invKey}
  \begin{isabelle}%
  \isacommand{consts}\isamarkupfalse%
-\isanewline
 \ \ invKey :: "key => key" \isanewline
 \isacommand{specification} (invKey)\isamarkupfalse% 
 \isanewline
@@ -299,7 +298,7 @@ This topic will be divided into two lectures. One will deal with automatic theor
 \ \  injective\_publicKey: \isanewline
  \ \ \ "publicKey b A = publicKey c A' ==> b=c \& A=A'"
  \end{isabelle}%
-\end{mydef}\pause
+\end{mydef}
 }
 
 \frame{
@@ -310,7 +309,7 @@ This topic will be divided into two lectures. One will deal with automatic theor
 \isanewline
 privateKey\_neq\_publicKey [iff]: \isanewline \ \ "privateKey b A $\neq$ publicKey c A'"
  \end{isabelle}%
-\end{mydef}\pause
+\end{mydef}
 }
 
 \frame{
